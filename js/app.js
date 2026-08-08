@@ -59,14 +59,12 @@ class SkyRoutineApp {
                 lastSubmittedDate: null
             },
 
-            settings: {
-                hideCompleted: false,
-                wallpaperMode: false
-            }
+            historyLogs: [], // Array of completed day summaries: { day, date, progressPercent, namajDone, weight }
         };
 
         this.state = this.loadState();
         this.activeTimers = {};
+
         this.mascotQuotes = [
             "Shuvo Shokal! Ajk amader 100 days challenge er aro ekta shundor din! 🌸",
             "5 Waqt Namaj porle mon ekdom shanti hoye jay. Shobgulo completed koro! 🕌",
@@ -270,8 +268,89 @@ class SkyRoutineApp {
         }
     }
 
-    // Cute Scolding Logic ("Boka Dibe" when tasks are missed)
-    scoldUserForMissingTasks() {
+    // History Drawer Modal Logic
+    openHistoryModal() {
+        window.cuteAudio.playPop();
+        this.renderHistoryModal();
+        const modal = document.getElementById('historyModalOverlay');
+        if (modal) modal.classList.add('active');
+    }
+
+    closeHistoryModal() {
+        window.cuteAudio.playPop();
+        const modal = document.getElementById('historyModalOverlay');
+        if (modal) modal.classList.remove('active');
+    }
+
+    renderHistoryModal() {
+        const body = document.getElementById('historyModalBody');
+        if (!body) return;
+
+        const history = this.state.historyLogs || [];
+
+        if (history.length === 0) {
+            body.innerHTML = `
+                <div style="text-align:center; color:var(--text-muted); padding:30px 10px;">
+                    <div style="font-size:3rem; margin-bottom:10px;">📜</div>
+                    <div style="font-weight:700; font-size:1.1rem;">No History Logged Yet</div>
+                    <p style="font-size:0.88rem; margin-top:6px;">As you complete days in your 100-Day Challenge, your history will automatically record here!</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        history.slice().reverse().forEach(log => {
+            html += `
+                <div style="background:var(--sky-50); border:1.5px solid var(--sky-200); border-radius:14px; padding:14px 18px; margin-bottom:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span style="font-family:'Outfit'; font-weight:800; font-size:1.1rem; color:var(--sky-700)">Day ${log.day} (${log.date})</span>
+                        <span style="background:var(--sky-500); color:white; font-size:0.78rem; font-weight:800; padding:4px 10px; border-radius:20px;">${log.percent}% Done</span>
+                    </div>
+                    <div style="font-size:0.86rem; color:var(--text-main); display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px;">
+                        <div>🕌 Namaj: <strong>${log.namajDone}/5</strong></div>
+                        <div>⚖️ Weight: <strong>${log.weight} kg</strong></div>
+                        <div>💧 Water: <strong>${log.water || 0}L</strong></div>
+                        <div>💻 Tech: <strong>${log.techCount || 0} practiced</strong></div>
+                    </div>
+                </div>
+            `;
+        });
+
+        body.innerHTML = html;
+    }
+
+    // Auto log day summary when day advances
+    logCurrentDayToHistory() {
+        if (!this.state.historyLogs) this.state.historyLogs = [];
+        
+        const namajDone = Object.values(this.state.namaj).filter(Boolean).length;
+        const techDone = Object.values(this.state.techLearning).filter(Boolean).length;
+        const totalItems = 5 + 4 + 6 + 2;
+        const timersDone = Object.values(this.state.timers).filter(t => t.done || t.timeSpent >= t.targetSec).length;
+        const careDone = (this.state.checklist.chulAchrano ? 1 : 0) + (this.state.checklist.roomGhuchano ? 1 : 0);
+        const percent = Math.round(((namajDone + timersDone + techDone + careDone) / totalItems) * 100);
+
+        const logEntry = {
+            day: this.state.challenge.currentDay,
+            date: new Date().toISOString().split('T')[0],
+            percent: percent,
+            namajDone: namajDone,
+            weight: this.state.goals.currentWeightKg,
+            water: this.state.checklist.waterLitersLogged || 0,
+            techCount: techDone
+        };
+
+        // Avoid duplicate entry for same day
+        const existingIdx = this.state.historyLogs.findIndex(h => h.day === logEntry.day);
+        if (existingIdx >= 0) {
+            this.state.historyLogs[existingIdx] = logEntry;
+        } else {
+            this.state.historyLogs.push(logEntry);
+        }
+        this.saveState();
+    }
+
         window.cuteAudio.playCatMeow();
         
         const bubble = document.getElementById('mascotSpeechBubble');
@@ -856,6 +935,7 @@ class SkyRoutineApp {
 
     // Day counter manual advance
     advanceDay() {
+        this.logCurrentDayToHistory();
         if (this.state.challenge.currentDay < 100) {
             this.state.challenge.currentDay += 1;
             this.saveState();
@@ -865,6 +945,7 @@ class SkyRoutineApp {
             this.showMascotDialogue(`Congratulations! Day ${this.state.challenge.currentDay} started! Keep shining! 🚀✨`);
         }
     }
+
 
     // Confetti Effect
     triggerConfetti() {

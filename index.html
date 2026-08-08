@@ -32,6 +32,9 @@
                 <span class="badge-tag" style="background:var(--sky-100); color:var(--sky-700); font-size:0.75rem;">100 Days Challenge</span>
             </div>
             <div class="nav-controls">
+                <button class="btn-icon-pill" onclick="app.openHistoryModal()">
+                    <span>📜</span> View History
+                </button>
                 <button class="btn-icon-pill" onclick="app.openNightReflectionModal()">
                     <span>🌙</span> Night Reflection
                 </button>
@@ -52,6 +55,7 @@
                     <span>⏩</span> Next Day
                 </button>
             </div>
+
         </nav>
 
 
@@ -276,7 +280,25 @@
     </div>
 
 
-    <!-- 🌙 Night Reflection Pop-Up Modal -->
+    <!-- 📜 100-Day Challenge History Drawer Modal -->
+    <div class="modal-overlay" id="historyModalOverlay">
+        <div class="modal-box" style="max-width:560px;">
+            <div class="modal-header">
+                <div class="modal-icon">📜</div>
+                <h2 class="modal-title">100-Day Challenge History</h2>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-top:4px;">Daily progress & habit completion logs</p>
+            </div>
+
+            <div class="modal-body" id="historyModalBody" style="max-height:360px; overflow-y:auto;">
+                <!-- Dynamically rendered history logs -->
+            </div>
+
+            <button class="btn-primary-block" onclick="app.closeHistoryModal()">
+                Close History 🌸
+            </button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="nightReflectionModal">
         <div class="modal-box">
             <div class="modal-header">
