@@ -1,10 +1,10 @@
 /**
- * SkyRoutine 🐾 - Kiwi Edition App Engine
+ * SkyRoutine 🐾 - Kiwi Edition App Engine v3
  */
 
 class SkyRoutineApp {
     constructor() {
-        this.STORAGE_KEY = 'sky_routine_app_data_v2';
+        this.STORAGE_KEY = 'sky_routine_app_data_v3';
         
         // Initial default state
         this.defaultState = {
@@ -16,6 +16,9 @@ class SkyRoutineApp {
             goals: {
                 targetWeightKg: 50.0,
                 currentWeightKg: 54.0,
+                weightHistory: [
+                    { date: new Date().toISOString().split('T')[0], weight: 54.0 }
+                ],
                 jobApplicationsCount: 0,
                 contentIdeasCount: 0,
                 confidenceScore: 85
@@ -32,6 +35,17 @@ class SkyRoutineApp {
                 report: { timeSpent: 0, targetSec: 3600, running: false, done: false }, // 1 hr
                 practice: { timeSpent: 0, targetSec: 7200, running: false, done: false }, // 2 hr
                 walk: { timeSpent: 0, targetSec: 1800, running: false, done: false } // 30 mins
+            },
+            fasting: {
+                targetHours: 16, // 16:8 or 12:12
+                startTime: null,
+                elapsedSec: 0,
+                running: false,
+                done: false
+            },
+            periodTracker: {
+                lastPeriodStart: new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0], // 7 days ago
+                cycleLengthDays: 28
             },
             checklist: {
                 chulAchrano: false,
@@ -52,8 +66,10 @@ class SkyRoutineApp {
                 nextjs: false
             },
             birthdays: [
-                { id: '1', name: 'Ayesha', date: '08-15', phone: '8801700000000', avatar: '🌸' },
-                { id: '2', name: 'Sumi', date: '09-02', phone: '8801800000000', avatar: '✨' }
+                { id: '1', name: 'Khadija Apu', date: '07-23', type: 'Birthday', avatar: '🌸', phone: '8801700000000' },
+                { id: '2', name: 'Zayed Vai', date: '05-21', type: 'Birthday', avatar: '👑', phone: '8801800000000' },
+                { id: '3', name: 'Sumi', date: '05-08', type: 'Birthday', avatar: '✨', phone: '8801900000000' },
+                { id: '4', name: "Ma, Baba & Khadija Apu's Anniversary", date: '11-21', type: 'Anniversary', avatar: '💍', phone: '8801700000000' }
             ],
             reflections: {
                 badBehaviorAvoided: true,
@@ -71,6 +87,7 @@ class SkyRoutineApp {
 
         this.state = this.loadState();
         this.activeTimers = {};
+        this.fastingInterval = null;
         
         this.mascotQuotes = [
             "Shuvo Shokal! Kiwi fresh environment-e ajker 100-day challenge start! 🥝✨",
@@ -79,7 +96,8 @@ class SkyRoutineApp {
             "Ada gonta hatcho to? 3L Water complete koro jeno skin crystal glowy thake! 💧✨",
             "Target Weight 50kg + No Tea + No Chocolate = Radiant Skin & Super Confidence! 🌸",
             "Ajk kothao ragi ba baje behaviour korbo na, rate light dinner & early sleep! 🌙",
-            "Friend-er Birthday thakle direct WhatsApp-e wish pathiye dao! 🎂🥳",
+            "Friend-er Birthday / Anniversary thakle direct WhatsApp-e wish pathiye dao! 🎂🥳",
+            "Intermittent Fasting & Period Self-Care track koro jeno body & mind 100% active thake! 💕",
             "Kiki the Kiwi Cat tomak shob shomoy cheer korbe! Tumi sotti unique & strong! 🐾❤️"
         ];
 
@@ -130,6 +148,7 @@ class SkyRoutineApp {
         this.bindEvents();
         this.checkNightReflectionTrigger();
         this.checkTodayBirthdays();
+        this.resumeFastingTimerIfNeeded();
         this.showMascotDialogue("Assalamu Alaikum! Fresh Kiwi environment-e ajker routine start koro! 🥝🐾");
     }
 
@@ -138,6 +157,8 @@ class SkyRoutineApp {
         this.renderNamajWidget();
         this.renderTimersWidget();
         this.renderChecklistWidget();
+        this.renderFastingWidget();
+        this.renderPeriodWidget();
         this.renderTechWidget();
         this.renderGoalsWidget();
         this.renderBirthdaysWidget();
@@ -180,7 +201,6 @@ class SkyRoutineApp {
             const isDone = this.state.namaj[p.key];
             if (isDone) completedCount++;
 
-            // If task is done and user hasn't toggled "show completed", hide it!
             const hideClass = (isDone && !showCompleted) ? 'hide-completed' : '';
 
             html += `
@@ -341,6 +361,178 @@ class SkyRoutineApp {
         }
         this.renderTimersWidget();
         this.renderDonutChart();
+    }
+
+    // 🥗 Intermittent Fasting Tracker (12hr / 16hr)
+    renderFastingWidget() {
+        const container = document.getElementById('fastingContainer');
+        if (!container) return;
+
+        const targetH = this.state.fasting.targetHours || 16;
+        const targetSec = targetH * 3600;
+        const elapsedSec = this.state.fasting.elapsedSec || 0;
+        const isRunning = this.state.fasting.running;
+        const isDone = this.state.fasting.done || elapsedSec >= targetSec;
+        const percent = Math.min(100, Math.round((elapsedSec / targetSec) * 100));
+
+        container.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div style="font-weight:700; font-size:1rem; color:var(--text-main)">Fasting Mode Target:</div>
+                <div style="display:flex; gap:8px;">
+                    <button class="tab-btn ${targetH === 12 ? 'active' : ''}" onclick="app.setFastingTarget(12)">12 Hr Fast</button>
+                    <button class="tab-btn ${targetH === 16 ? 'active' : ''}" onclick="app.setFastingTarget(16)">16 Hr Fast</button>
+                </div>
+            </div>
+
+            <div class="fasting-display" id="fastingDisplay">
+                ${this.formatTime(elapsedSec)} / ${targetH}:00:00
+            </div>
+
+            <div class="progress-track" style="margin-bottom:16px; background:var(--kiwi-100);">
+                <div class="progress-fill" style="width: ${percent}%; background: linear-gradient(90deg, #84cc16, #65a30d);"></div>
+            </div>
+
+            <div class="timer-controls">
+                ${!isRunning ? `
+                    <button class="btn-timer btn-timer-start" onclick="app.startFasting()">▶ Start Fasting</button>
+                ` : `
+                    <button class="btn-timer btn-timer-pause" onclick="app.pauseFasting()">⏸ Pause Fast</button>
+                `}
+                <button class="btn-timer ${isDone ? 'btn-timer-done' : 'btn-timer-reset'}" onclick="app.completeFasting()">
+                    ${isDone ? '✓ Fast Completed' : 'Complete Fast'}
+                </button>
+            </div>
+        `;
+    }
+
+    setFastingTarget(hours) {
+        this.state.fasting.targetHours = hours;
+        this.saveState();
+        this.renderFastingWidget();
+        window.cuteAudio.playPop();
+    }
+
+    startFasting() {
+        window.cuteAudio.playPop();
+        if (this.fastingInterval) clearInterval(this.fastingInterval);
+
+        this.state.fasting.running = true;
+        this.state.fasting.startTime = Date.now();
+        this.saveState();
+        this.renderFastingWidget();
+
+        this.fastingInterval = setInterval(() => {
+            this.state.fasting.elapsedSec += 1;
+            const targetSec = (this.state.fasting.targetHours || 16) * 3600;
+
+            const el = document.getElementById('fastingDisplay');
+            if (el) {
+                el.innerText = `${this.formatTime(this.state.fasting.elapsedSec)} / ${this.state.fasting.targetHours}:00:00`;
+            }
+
+            if (this.state.fasting.elapsedSec >= targetSec && !this.state.fasting.done) {
+                this.state.fasting.done = true;
+                this.pauseFasting();
+                window.cuteAudio.playFanfare();
+                this.triggerConfetti();
+                this.showMascotDialogue(`Awesome! ${this.state.fasting.targetHours} Hours Intermittent Fasting Completed! 🥗✨`);
+            }
+        }, 1000);
+    }
+
+    pauseFasting() {
+        window.cuteAudio.playPop();
+        if (this.fastingInterval) {
+            clearInterval(this.fastingInterval);
+            this.fastingInterval = null;
+        }
+        this.state.fasting.running = false;
+        this.saveState();
+        this.renderFastingWidget();
+    }
+
+    completeFasting() {
+        this.state.fasting.done = true;
+        this.pauseFasting();
+        window.cuteAudio.playChime();
+        this.showMascotDialogue("Fasting completed & logged! Glowing skin & healthy body ongoing! 🥗✨");
+    }
+
+    resumeFastingTimerIfNeeded() {
+        if (this.state.fasting && this.state.fasting.running) {
+            this.startFasting();
+        }
+    }
+
+    // 🌸 Period & Menstrual Cycle Tracker
+    renderPeriodWidget() {
+        const container = document.getElementById('periodContainer');
+        if (!container) return;
+
+        const lastStart = new Date(this.state.periodTracker.lastPeriodStart || Date.now());
+        const cycleDays = this.state.periodTracker.cycleLengthDays || 28;
+        const today = new Date();
+
+        const diffTime = Math.abs(today - lastStart);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        
+        const currentCycleDay = (diffDays % cycleDays) + 1;
+        const daysUntilNext = cycleDays - currentCycleDay;
+
+        let phase = 'Follicular Phase';
+        let tip = 'Glowy skin energy peak! Great time for coding, walk & skincare hydration! 🌸';
+
+        if (currentCycleDay <= 5) {
+            phase = 'Period Phase 🩸';
+            tip = 'Rest well, drink warm water, avoid cold items & do light walking! 💖';
+        } else if (currentCycleDay >= 12 && currentCycleDay <= 16) {
+            phase = 'Ovulation Phase ✨';
+            tip = 'Peak confidence & glowing radiance! Ideal time for content creation! 🎥';
+        } else if (currentCycleDay > 16) {
+            phase = 'Luteal Phase 🌿';
+            tip = 'Keep diet light, avoid tea & chocolate, sleep early for fresh skin! 🌙';
+        }
+
+        container.innerHTML = `
+            <div style="background:linear-gradient(135deg, #fff5f8 0%, #fdf2f8 100%); border:1.5px solid #fbcfe8; border-radius:18px; padding:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-weight:800; font-size:1.1rem; color:#be185d;">🌸 Period & Cycle Status</div>
+                    <span class="period-phase-badge">${phase}</span>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0;">
+                    <div style="background:white; border-radius:14px; padding:12px 16px; text-align:center; border:1px solid #fbcfe8;">
+                        <div style="font-family:'Outfit'; font-size:1.8rem; font-weight:800; color:#be185d;">Day ${currentCycleDay}</div>
+                        <div style="font-size:0.78rem; color:var(--text-muted);">Current Cycle Day</div>
+                    </div>
+                    <div style="background:white; border-radius:14px; padding:12px 16px; text-align:center; border:1px solid #fbcfe8;">
+                        <div style="font-family:'Outfit'; font-size:1.8rem; font-weight:800; color:#be185d;">${daysUntilNext} Days</div>
+                        <div style="font-size:0.78rem; color:var(--text-muted);">Until Next Period</div>
+                    </div>
+                </div>
+
+                <div style="font-size:0.86rem; color:#831843; font-weight:600; background:white; padding:12px 16px; border-radius:12px; border:1px solid #fbcfe8; margin-bottom:14px;">
+                    💡 <strong>Self-Care Tip:</strong> ${tip}
+                </div>
+
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <label style="font-size:0.84rem; font-weight:700; color:#be185d;">Last Period Date:</label>
+                    <input type="date" id="lastPeriodInput" value="${this.state.periodTracker.lastPeriodStart}" style="padding:6px 10px; border-radius:8px; border:1.5px solid #fbcfe8; font-weight:700;" />
+                    <button class="btn-icon-pill" style="background:#be185d; color:white; border:none;" onclick="app.savePeriodDate()">Save</button>
+                </div>
+            </div>
+        `;
+    }
+
+    savePeriodDate() {
+        const val = document.getElementById('lastPeriodInput').value;
+        if (val) {
+            this.state.periodTracker.lastPeriodStart = val;
+            this.saveState();
+            this.renderPeriodWidget();
+            window.cuteAudio.playChime();
+            this.showMascotDialogue("Period cycle date updated! Skincare & self-care guidance synchronized! 🌸✨");
+        }
     }
 
     // 💅 Daily Care, Glowy Skin Diet & Housekeeping Checklist
@@ -537,7 +729,7 @@ class SkyRoutineApp {
         }
     }
 
-    // 🎯 Personal Transformation Targets
+    // 🎯 Personal Transformation Targets & Easy Weight Submission
     renderGoalsWidget() {
         const container = document.getElementById('goalsContainer');
         if (!container) return;
@@ -550,15 +742,15 @@ class SkyRoutineApp {
         container.innerHTML = `
             <div class="goal-item">
                 <div class="goal-header">
-                    <div class="goal-title">⚖️ Target Weight Target (50 kg)</div>
+                    <div class="goal-title">⚖️ Target Weight (Goal: 50 kg)</div>
                     <div class="goal-val">${currentW} kg / ${targetW} kg</div>
                 </div>
-                <div style="font-size:0.84rem; color:var(--text-muted); margin-bottom:8px;">
-                    Progressing towards healthy 50kg body goal with balanced diet & care!
+                <div style="font-size:0.84rem; color:var(--text-muted); margin-bottom:10px;">
+                    Submit current weight to record history & track progress to 50kg!
                 </div>
-                <div style="display:flex; gap:10px;">
-                    <input type="number" step="0.5" id="weightInput" value="${currentW}" style="width:100px; padding:6px 10px; border-radius:8px; border:1.5px solid var(--kiwi-300);" />
-                    <button class="btn-icon-pill" onclick="app.saveWeight()">Update Weight</button>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="number" step="0.5" id="weightInput" value="${currentW}" style="width:110px; padding:8px 12px; border-radius:10px; border:1.5px solid var(--kiwi-300); font-weight:700;" />
+                    <button class="btn-icon-pill" style="background:var(--kiwi-600); color:white; border:none;" onclick="app.submitWeight()">Submit Weight</button>
                 </div>
             </div>
 
@@ -587,14 +779,20 @@ class SkyRoutineApp {
         `;
     }
 
-    saveWeight() {
+    submitWeight() {
         const val = parseFloat(document.getElementById('weightInput').value);
         if (!isNaN(val) && val > 0) {
             this.state.goals.currentWeightKg = val;
+            if (!this.state.goals.weightHistory) this.state.goals.weightHistory = [];
+            this.state.goals.weightHistory.push({
+                date: new Date().toISOString().split('T')[0],
+                weight: val
+            });
             this.saveState();
             this.renderGoalsWidget();
-            window.cuteAudio.playChime();
-            this.showMascotDialogue(`Weight updated to ${val} kg! Health goal 50kg focus ongoing! 🌸`);
+            window.cuteAudio.playFanfare();
+            this.triggerConfetti();
+            this.showMascotDialogue(`Weight submitted & logged (${val} kg)! 50kg target focus ongoing! 🌸✨`);
         }
     }
 
@@ -608,7 +806,7 @@ class SkyRoutineApp {
         }
     }
 
-    // 🎂 Friends Birthday Tracker & WhatsApp Wish Generator
+    // 🎂 Friends Birthday & Anniversary Tracker (Preconfigured specific dates)
     renderBirthdaysWidget() {
         const container = document.getElementById('birthdaysContainer');
         if (!container) return;
@@ -619,7 +817,11 @@ class SkyRoutineApp {
         let html = '';
         birthdays.forEach(b => {
             const isToday = b.date === todayStr;
-            const wishText = encodeURIComponent(`Happy Birthday ${b.name}! 🥳🎉 Wishing you a wonderful year filled with happiness & success! 🎂✨`);
+            let wishMsg = `Happy ${b.type} ${b.name}! 🥳🎉 Wishing you a wonderful year filled with happiness, health & success! 🎂✨`;
+            if (b.type === 'Anniversary') {
+                wishMsg = `Happy Marriage Anniversary! 💍✨ Wishing Ma, Baba & Khadija Apu endless love, joy & happiness together! 💖🌸`;
+            }
+            const wishText = encodeURIComponent(wishMsg);
             const waUrl = `https://api.whatsapp.com/send?phone=${b.phone}&text=${wishText}`;
 
             html += `
@@ -630,10 +832,10 @@ class SkyRoutineApp {
                             <div style="font-weight:700; font-size:1rem; color:var(--text-main)">
                                 ${b.name} ${isToday ? '<span class="badge-tag" style="background:#f472b6; color:white">TODAY!</span>' : ''}
                             </div>
-                            <div style="font-size:0.8rem; color:var(--text-muted)">Birthday: ${b.date}</div>
+                            <div style="font-size:0.8rem; color:var(--text-muted);">${b.type}: <strong>${b.date}</strong></div>
                         </div>
                     </div>
-                    <a href="${waUrl}" target="_blank" class="btn-whatsapp-wish" style="text-decoration:none;">
+                    <a href="${waUrl}" target="_blank" class="btn-whatsapp-wish">
                         <span>💬</span> Wish on WhatsApp
                     </a>
                 </div>
@@ -652,7 +854,7 @@ class SkyRoutineApp {
                 window.cuteAudio.playFanfare();
                 this.triggerConfetti();
                 const names = todayBirthdays.map(b => b.name).join(', ');
-                this.showMascotDialogue(`🎉 TODAY IS ${names}'s BIRTHDAY! Click "Wish on WhatsApp" to send them love! 🎂✨`);
+                this.showMascotDialogue(`🎉 TODAY IS ${names}'s Special Day! Click "Wish on WhatsApp" to send direct wishes! 🎂✨`);
             }, 1000);
         }
     }
@@ -735,7 +937,6 @@ class SkyRoutineApp {
         }
     }
 
-    // Toggle Showing / Hiding Completed Items
     toggleCompletedItemsVisibility() {
         this.state.settings.showCompletedItems = !this.state.settings.showCompletedItems;
         this.saveState();
@@ -747,7 +948,6 @@ class SkyRoutineApp {
         if (btn) btn.innerText = btnText;
     }
 
-    // Mascot Speech Dialogue & Cute Scolding
     showMascotDialogue(text) {
         const el = document.getElementById('mascotSpeechBubble');
         if (el) {
@@ -788,7 +988,6 @@ class SkyRoutineApp {
         this.showMascotDialogue(scoldMsg);
     }
 
-    // Night Reflection Modal
     openNightReflectionModal() {
         window.cuteAudio.playPop();
         document.getElementById('nightReflectionModal').classList.add('active');
@@ -833,7 +1032,6 @@ class SkyRoutineApp {
         }
     }
 
-    // History Modal
     openHistoryModal() {
         window.cuteAudio.playPop();
         this.renderHistoryModal();
@@ -944,7 +1142,7 @@ class SkyRoutineApp {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `SkyRoutine_Kiwi_Backup_Day${this.state.challenge.currentDay}.json`;
+        a.download = `SkyRoutine_Backup_Day${this.state.challenge.currentDay}.json`;
         a.click();
         URL.revokeObjectURL(url);
         window.cuteAudio.playChime();

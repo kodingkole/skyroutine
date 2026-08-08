@@ -30,8 +30,8 @@
     --text-light: #94a3b8;
 
     /* Glassmorphism & Effects */
-    --glass-bg: rgba(255, 255, 255, 0.88);
-    --glass-border: rgba(236, 252, 203, 0.9);
+    --glass-bg: rgba(255, 255, 255, 0.92);
+    --glass-border: rgba(236, 252, 203, 0.95);
     --glass-shadow: 0 12px 32px -6px rgba(101, 163, 13, 0.12), 0 4px 12px rgba(0, 0, 0, 0.02);
     --card-shadow-hover: 0 20px 45px -8px rgba(101, 163, 13, 0.22), 0 8px 16px rgba(0, 0, 0, 0.04);
 
@@ -177,7 +177,7 @@ body.wallpaper-mode .hide-in-wallpaper {
     box-shadow: 0 8px 20px rgba(132, 204, 22, 0.3);
 }
 
-/* Hero 100-Day Transformation Counter Banner (Fresh Kiwi Theme) */
+/* Hero 100-Day Transformation Counter Banner */
 .hero-banner {
     background: linear-gradient(135deg, #65a30d 0%, #84cc16 50%, #a3e635 100%);
     border-radius: var(--radius-lg);
@@ -309,7 +309,7 @@ body.wallpaper-mode .hide-in-wallpaper {
 .dashboard-grid {
     display: grid;
     grid-template-columns: 2.3fr 1fr;
-    gap: 24px;
+    gap: 28px;
 }
 
 @media (max-width: 1024px) {
@@ -321,7 +321,7 @@ body.wallpaper-mode .hide-in-wallpaper {
 .widget-column {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 28px;
 }
 
 /* Card Widget Styles */
@@ -331,10 +331,11 @@ body.wallpaper-mode .hide-in-wallpaper {
     -webkit-backdrop-filter: blur(18px);
     border: 1.5px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    padding: 26px;
+    padding: 28px;
     box-shadow: var(--glass-shadow);
     transition: var(--transition-bounce);
     position: relative;
+    overflow: visible;
 }
 
 .card-widget:hover {
@@ -346,14 +347,14 @@ body.wallpaper-mode .hide-in-wallpaper {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
     border-bottom: 2px solid var(--kiwi-100);
 }
 
 .widget-title {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: var(--kiwi-800);
     display: flex;
@@ -370,64 +371,29 @@ body.wallpaper-mode .hide-in-wallpaper {
     border-radius: var(--radius-full);
 }
 
-/* Task Item Hiding Animation Logic */
+/* FIX: Task Item Hiding Animation Logic without clipping or overlap! */
 .task-anim-item {
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease, max-height 0.4s ease;
-    max-height: 120px;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, max-height 0.35s ease;
     opacity: 1;
+    position: relative;
 }
 
 .task-anim-item.hide-completed {
-    opacity: 0;
-    transform: scale(0.85) translateY(-10px);
-    max-height: 0;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-/* Collapsible Completed Section */
-.completed-tasks-collapsible {
-    margin-top: 16px;
-    border-top: 2px dashed var(--kiwi-200);
-    padding-top: 14px;
-}
-
-.completed-toggle-btn {
-    background: var(--kiwi-50);
-    border: 1.5px solid var(--kiwi-200);
-    color: var(--kiwi-800);
-    padding: 8px 16px;
-    border-radius: var(--radius-full);
-    font-weight: 700;
-    font-size: 0.84rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    transition: var(--transition-fast);
-}
-
-.completed-toggle-btn:hover {
-    background: var(--kiwi-200);
+    display: none !important;
 }
 
 /* 🕌 5 Waqt Namaj Tracker Widget */
 .namaj-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-    gap: 14px;
+    gap: 16px;
 }
 
 .namaj-card {
     background: #ffffff;
     border: 2px solid var(--kiwi-100);
     border-radius: var(--radius-md);
-    padding: 18px 14px;
+    padding: 20px 14px;
     text-align: center;
     cursor: pointer;
     transition: var(--transition-bounce);
@@ -447,25 +413,25 @@ body.wallpaper-mode .hide-in-wallpaper {
 }
 
 .namaj-icon {
-    font-size: 1.9rem;
+    font-size: 2rem;
     margin-bottom: 6px;
     display: block;
 }
 
 .namaj-name {
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.02rem;
     color: var(--text-main);
 }
 
 .namaj-time {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     margin-top: 2px;
 }
 
 .namaj-status-check {
-    margin-top: 10px;
+    margin-top: 12px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -487,87 +453,92 @@ body.wallpaper-mode .hide-in-wallpaper {
     transform: scale(1.1);
 }
 
-/* ⏱️ Interactive Timers & Routines */
+/* FIX: Interactive Timers & Routines (No text or button cutoff!) */
 .timers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px;
+    gap: 20px;
 }
 
 .timer-card {
     background: white;
     border: 1.5px solid var(--kiwi-100);
     border-radius: var(--radius-md);
-    padding: 20px;
+    padding: 24px 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-height: 220px;
     transition: var(--transition-bounce);
+    box-sizing: border-box;
 }
 
 .timer-card:hover {
     border-color: var(--kiwi-300);
-    box-shadow: 0 8px 22px rgba(101, 163, 13, 0.12);
+    box-shadow: 0 10px 24px rgba(101, 163, 13, 0.12);
 }
 
 .timer-card-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 12px;
 }
 
 .timer-icon-bg {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: var(--radius-sm);
     background: var(--kiwi-100);
     color: var(--kiwi-700);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
+    flex-shrink: 0;
 }
 
 .timer-title {
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.05rem;
+    color: var(--text-main);
 }
 
 .timer-target {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: var(--text-muted);
 }
 
 .timer-display {
     font-family: 'Outfit', sans-serif;
-    font-size: 2.3rem;
+    font-size: 2.4rem;
     font-weight: 800;
     color: var(--kiwi-700);
     text-align: center;
-    margin: 12px 0;
+    margin: 14px 0;
     letter-spacing: 1px;
 }
 
 .timer-controls {
     display: flex;
-    gap: 8px;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 14px;
 }
 
 .btn-timer {
     flex: 1;
-    padding: 10px 0;
+    padding: 12px 0;
     border: none;
     border-radius: var(--radius-sm);
     font-weight: 700;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: var(--transition-fast);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .btn-timer-start {
@@ -590,14 +561,14 @@ body.wallpaper-mode .hide-in-wallpaper {
 
 .btn-timer-reset {
     background: var(--kiwi-100);
-    color: var(--text-muted);
+    color: var(--kiwi-800);
 }
 
 /* Checklist Items */
 .checklist-container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
 }
 
 .checklist-item {
@@ -607,7 +578,7 @@ body.wallpaper-mode .hide-in-wallpaper {
     background: white;
     border: 1.5px solid var(--kiwi-100);
     border-radius: var(--radius-md);
-    padding: 14px 18px;
+    padding: 16px 20px;
     cursor: pointer;
     transition: var(--transition-bounce);
     user-select: none;
@@ -658,7 +629,7 @@ body.wallpaper-mode .hide-in-wallpaper {
 
 .checklist-text {
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.98rem;
 }
 
 .counter-input-group {
@@ -668,14 +639,14 @@ body.wallpaper-mode .hide-in-wallpaper {
 }
 
 .counter-btn {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     border: 1.5px solid var(--kiwi-300);
     background: white;
     color: var(--kiwi-700);
     font-weight: 800;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -692,8 +663,8 @@ body.wallpaper-mode .hide-in-wallpaper {
 .counter-value {
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
-    font-size: 1.2rem;
-    min-width: 30px;
+    font-size: 1.25rem;
+    min-width: 32px;
     text-align: center;
 }
 
@@ -701,14 +672,14 @@ body.wallpaper-mode .hide-in-wallpaper {
 .tech-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 14px;
+    gap: 16px;
 }
 
 .tech-card {
     background: white;
     border: 1.5px solid var(--kiwi-100);
     border-radius: var(--radius-md);
-    padding: 16px;
+    padding: 18px;
     text-align: center;
     cursor: pointer;
     transition: var(--transition-bounce);
@@ -726,14 +697,14 @@ body.wallpaper-mode .hide-in-wallpaper {
 }
 
 .tech-icon {
-    font-size: 2.1rem;
+    font-size: 2.2rem;
     margin-bottom: 6px;
     display: block;
 }
 
 .tech-name {
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.98rem;
 }
 
 .tech-tag {
@@ -747,62 +718,34 @@ body.wallpaper-mode .hide-in-wallpaper {
     color: var(--kiwi-800);
 }
 
-/* Personal Transformation Targets */
-.goal-item {
-    background: white;
-    border: 1.5px solid var(--kiwi-100);
-    border-radius: var(--radius-md);
-    padding: 16px 20px;
-    margin-bottom: 14px;
-}
-
-.goal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.goal-title {
-    font-weight: 700;
-    font-size: 0.98rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.goal-val {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    color: var(--kiwi-700);
-}
-
 /* 🎂 Friends Birthday Tracker Cards & Auto Wish Button */
 .birthday-card {
     background: linear-gradient(135deg, #ffffff 0%, #f7fee7 100%);
     border: 1.5px solid var(--kiwi-200);
     border-radius: var(--radius-md);
-    padding: 16px;
-    margin-bottom: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
 }
 
 .btn-whatsapp-wish {
     background: #25d366;
     color: white;
     border: none;
-    padding: 8px 14px;
+    padding: 10px 16px;
     border-radius: var(--radius-full);
     font-weight: 700;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 6px;
     transition: var(--transition-bounce);
     box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+    text-decoration: none;
 }
 
 .btn-whatsapp-wish:hover {
@@ -810,14 +753,14 @@ body.wallpaper-mode .hide-in-wallpaper {
     box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
 }
 
-/* 🐾 Kiki the Cute Kiwi Mascot */
+/* 🐾 Kiki the Cute Kiwi Mascot (FIX: Speech bubble text no longer cut off at top!) */
 .mascot-panel {
     position: sticky;
     top: 24px;
     background: linear-gradient(135deg, #ffffff 0%, #f7fee7 100%);
     border: 2px solid var(--kiwi-200);
     border-radius: var(--radius-lg);
-    padding: 24px;
+    padding: 28px 24px 24px 24px;
     text-align: center;
     box-shadow: var(--glass-shadow);
 }
@@ -826,14 +769,16 @@ body.wallpaper-mode .hide-in-wallpaper {
     position: relative;
     background: var(--kiwi-600);
     color: white;
-    border-radius: 18px;
-    padding: 14px 18px;
-    font-size: 0.92rem;
+    border-radius: 20px;
+    padding: 16px 20px;
+    font-size: 0.95rem;
     font-weight: 600;
-    line-height: 1.45;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 22px rgba(101, 163, 13, 0.28);
+    line-height: 1.5;
+    margin-top: 10px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 24px rgba(101, 163, 13, 0.28);
     animation: popBubble 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    word-break: break-word;
 }
 
 .speech-bubble::after {
@@ -873,7 +818,7 @@ body.wallpaper-mode .hide-in-wallpaper {
 
 .mascot-name {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     font-weight: 800;
     color: var(--kiwi-800);
 }
@@ -913,6 +858,27 @@ body.wallpaper-mode .hide-in-wallpaper {
     box-shadow: 0 10px 24px rgba(101, 163, 13, 0.35);
 }
 
+/* Fasting & Period Tracker Styling */
+.fasting-display {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--kiwi-700);
+    text-align: center;
+    margin: 12px 0;
+}
+
+.period-phase-badge {
+    background: #fce7f3;
+    color: #be185d;
+    padding: 6px 16px;
+    border-radius: var(--radius-full);
+    font-weight: 700;
+    font-size: 0.88rem;
+    display: inline-block;
+    margin-top: 8px;
+}
+
 /* Modals */
 .modal-overlay {
     position: fixed;
@@ -941,7 +907,7 @@ body.wallpaper-mode .hide-in-wallpaper {
     background: white;
     border-radius: var(--radius-lg);
     width: 100%;
-    max-width: 520px;
+    max-width: 540px;
     padding: 32px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     transform: scale(0.9);
