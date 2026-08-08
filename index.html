@@ -309,94 +309,54 @@
 
             </div>
 
-            <!-- Right Column: Sticky Mascot Panel -->
+            <!-- Right Column: Sticky Mascot Companion Panel -->
             <div class="widget-column">
-                <div class="mascot-panel">
+                <div class="mascot-panel" id="mainMascotPanel" style="position:sticky; top:90px; background:linear-gradient(135deg, #ffffff 0%, #f7fee7 100%); border:2px solid var(--kiwi-300); border-radius:var(--radius-lg); padding:24px; box-shadow:0 12px 30px rgba(101,163,13,0.12);">
                     
-                    <!-- Dynamic Speech Bubble -->
-                    <div class="speech-bubble" id="mascotSpeechBubble">
-                        Assalamu Alaikum! Fresh Kiwi environment-e ajker routine start koro! 🥝🐾
-                    </div>
-
-                    <!-- SVG Animated Mascot Avatar (Kiki the Kiwi Cat) -->
-                    <div class="mascot-avatar" onclick="app.triggerMascotRandomTalk()">
-                        <svg class="cat-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Outer Glow / Halo -->
-                            <circle cx="100" cy="100" r="90" fill="#ECFCCB" opacity="0.7"/>
-                            <!-- Ears -->
-                            <polygon points="45,75 25,25 80,45" fill="#84CC16" />
-                            <polygon points="50,70 35,35 75,50" fill="#FFEDD5" />
-                            <polygon points="155,75 175,25 120,45" fill="#84CC16" />
-                            <polygon points="150,70 165,35 125,50" fill="#FFEDD5" />
-                            <!-- Cat Head -->
-                            <ellipse cx="100" cy="105" rx="65" ry="55" fill="#FFFFFF" stroke="#65A30D" stroke-width="4" />
-                            <!-- Eyes -->
-                            <ellipse cx="75" cy="95" rx="8" ry="11" fill="#4D7C0F" />
-                            <ellipse cx="125" cy="95" rx="8" ry="11" fill="#4D7C0F" />
-                            <circle cx="77" cy="92" r="3" fill="#FFFFFF" />
-                            <circle cx="127" cy="92" r="3" fill="#FFFFFF" />
-                            <!-- Cheeks -->
-                            <ellipse cx="60" cy="110" rx="10" ry="6" fill="#F472B6" opacity="0.5" />
-                            <ellipse cx="140" cy="110" rx="10" ry="6" fill="#F472B6" opacity="0.5" />
-                            <!-- Nose & Mouth -->
-                            <polygon points="100,107 95,112 105,112" fill="#F472B6" />
-                            <path d="M95 116 Q100 122 105 116" stroke="#65A30D" stroke-width="3" stroke-linecap="round" fill="none" />
-                            <!-- Whiskers -->
-                            <line x1="30" y1="102" x2="55" y2="105" stroke="#84CC16" stroke-width="3" stroke-linecap="round" />
-                            <line x1="25" y1="112" x2="55" y2="112" stroke="#84CC16" stroke-width="3" stroke-linecap="round" />
-                            <line x1="170" y1="102" x2="145" y2="105" stroke="#84CC16" stroke-width="3" stroke-linecap="round" />
-                            <line x1="175" y1="112" x2="145" y2="112" stroke="#84CC16" stroke-width="3" stroke-linecap="round" />
-                            <!-- Paw -->
-                            <ellipse cx="100" cy="155" rx="22" ry="14" fill="#FFFFFF" stroke="#65A30D" stroke-width="3" />
-                            <circle cx="92" cy="155" r="3" fill="#F472B6" />
-                            <circle cx="100" cy="153" r="3" fill="#F472B6" />
-                            <circle cx="108" cy="155" r="3" fill="#F472B6" />
-                        </svg>
-                    </div>
-
-        <!-- Mascot & Companion Floating Dock -->
-        <div class="mascot-panel" id="mainMascotPanel">
-            <!-- 🐱 Real Animated Magical Kiwi Cat Creature -->
-            <div class="magical-kiwi-container" id="mascotCatContainer" onclick="app.petKikiCat()" title="Click to pet Kiki the Kiwi Cat!">
-                <div class="magical-kiwi-cat" id="mascotCatElement">
-                    <div class="kiki-accessory-container"></div>
-                    <div class="kiwi-cat-body" id="kiwiCatBody">
-                        <div class="kiwi-ear left"></div>
-                        <div class="kiwi-ear right"></div>
-                        <div class="kiwi-eyes" id="kiwiCatEyes">
-                            <div class="kiwi-eye"></div>
-                            <div class="kiwi-eye"></div>
+                    <!-- 🐱 Real Animated Magical Kiwi Cat Creature -->
+                    <div class="magical-kiwi-container" id="mascotCatContainer" onclick="app.petKikiCat()" title="Click to pet Kiki the Kiwi Cat!">
+                        <div class="magical-kiwi-cat" id="mascotCatElement">
+                            <div class="kiki-accessory-container"></div>
+                            <div class="kiwi-cat-body" id="kiwiCatBody">
+                                <div class="kiwi-ear left"></div>
+                                <div class="kiwi-ear right"></div>
+                                <div class="kiwi-eyes" id="kiwiCatEyes">
+                                    <div class="kiwi-eye"></div>
+                                    <div class="kiwi-eye"></div>
+                                </div>
+                                <div class="kiwi-nose"></div>
+                            </div>
                         </div>
-                        <div class="kiwi-nose"></div>
+                        <div class="kiwi-sparkle" style="top:-5px; left:5px;">✨</div>
+                        <div class="kiwi-sparkle" style="top:10px; right:0px;">🌟</div>
+                        <div class="kiwi-sparkle" style="bottom:10px; left:-5px;">💖</div>
                     </div>
+
+                    <div class="mascot-info" style="text-align:center;">
+                        <div class="mascot-header" style="justify-content:center;">
+                            <h3 class="mascot-name" id="mascotNameText" style="font-size:1.15rem; color:var(--kiwi-800); font-family:'Outfit', sans-serif; font-weight:800;">Kiki the Kiwi Cat 🐾</h3>
+                        </div>
+                        <div class="mascot-speech-bubble" id="mascotSpeechBubble" style="background:#ffffff; color:#1e293b; border:1.5px solid var(--kiwi-300); font-weight:700; font-size:0.9rem; padding:12px 16px; border-radius:16px; margin:14px 0; box-shadow:0 4px 14px rgba(0,0,0,0.06); line-height:1.4;">
+                            Meow! Day 1 starts 9th August! Click me or pet me for motivation! 🌸✨
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+                            <div style="display:flex; gap:8px; justify-content:center;">
+                                <button class="btn-icon-pill" style="background:#ffe4e6; color:#9f1239; border:1px solid #f43f5e; font-weight:800; font-size:0.8rem; padding:8px 14px; flex:1;" onclick="app.triggerCuteScolding()">
+                                    📢 Get Scolded ("Boka Dibe")
+                                </button>
+                                <button class="btn-icon-pill" style="background:#ecfccb; color:#3f6212; border:1px solid #84cc16; font-weight:800; font-size:0.8rem; padding:8px 14px; flex:1;" onclick="app.petKikiCat()">
+                                    🌸 Give Flower & 🍫 Pet Kiki
+                                </button>
+                            </div>
+                            <button class="btn-icon-pill" style="background:var(--kiwi-100); color:var(--kiwi-800); border:none; padding:8px 12px; font-size:0.8rem; width:100%; font-weight:700;" onclick="app.openNightReflectionModal()">
+                                🌙 Night Reflection Pop-Up
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="kiwi-sparkle" style="top:-5px; left:5px;">✨</div>
-                <div class="kiwi-sparkle" style="top:10px; right:0px;">🌟</div>
-                <div class="kiwi-sparkle" style="bottom:10px; left:-5px;">💖</div>
             </div>
 
-            <div class="mascot-info" style="text-align:center;">
-                <div class="mascot-header" style="justify-content:center;">
-                    <h3 class="mascot-name" style="font-size:1.15rem; color:var(--kiwi-800);">Kiki the Kiwi Cat 🐾</h3>
-                </div>
-                <div class="mascot-speech-bubble" id="mascotSpeechBubble" style="background:#ffffff; color:#1e293b; border:1.5px solid var(--kiwi-300); font-weight:700; font-size:0.9rem; padding:10px 14px; border-radius:14px; margin:10px 0; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-                    Meow! Day 1 starts 9th August! Click me or pet me for motivation! 🌸✨
-                </div>
-                <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
-                    <button class="btn-icon-pill" style="background:#ffe4e6; color:#9f1239; border:1px solid #f43f5e; font-weight:800; font-size:0.8rem; padding:6px 12px;" onclick="app.triggerCuteScolding()">
-                        📢 Get Scolded ("Boka Dibe")
-                    </button>
-                    <button class="btn-icon-pill" style="background:#ecfccb; color:#3f6212; border:1px solid #84cc16; font-weight:800; font-size:0.8rem; padding:6px 12px;" onclick="app.petKikiCat()">
-                        🌸 Give Flower & 🍫 Pet Kiki
-                    </button>
-                </div>
-            </div>
-        </div>
-                    <button class="btn-mascot-talk" style="margin-top:8px; background:var(--kiwi-100); color:var(--kiwi-800)" onclick="app.openNightReflectionModal()">
-                        <span>🌙</span> Night Reflection Pop-Up
-                    </button>
-                </div>
-            </div>
 
         </div>
 

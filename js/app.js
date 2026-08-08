@@ -246,7 +246,44 @@ class SkyRoutineApp {
         this.checkMyBirthday();
         this.startKikiFreeWalk();
         this.updateKikiOutfit();
+        this.autoUpdateMascotMood();
     }
+
+    // 🤖 100% Automatic Mascot Mood Engine (Angry Red when tasks incomplete, Happy Green/Pink when complete!)
+    autoUpdateMascotMood() {
+        const namajDone = Object.values(this.state.namaj).filter(Boolean).length;
+        const waterL = this.state.checklist.waterLitersLogged || 0;
+        const noTea = this.state.checklist.noMilkTea;
+
+        const isFullyDone = namajDone === 5 && waterL >= 3.0 && noTea;
+
+        const catBody = document.getElementById('kiwiCatBody');
+        const catContainer = document.getElementById('mascotCatContainer');
+        const bubble = document.getElementById('mascotSpeechBubble');
+
+        if (!isFullyDone) {
+            // AUTOMATIC ANGRY RED MODE 😾
+            if (catBody) catBody.style.background = 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)';
+            if (catContainer) catContainer.style.filter = 'drop-shadow(0 0 16px rgba(244, 63, 94, 0.6))';
+            if (bubble) {
+                bubble.style.background = '#ffe4e6';
+                bubble.style.color = '#881337';
+                bubble.style.borderColor = '#f43f5e';
+                bubble.innerText = "Ei! Tomar ajker Namaj, Water 3L ba Tasks ekhono baki! Taratari complete koro! 😾";
+            }
+        } else {
+            // AUTOMATIC HAPPY PRAISE MODE 😸
+            if (catBody) catBody.style.background = 'linear-gradient(135deg, #a3e635 0%, #65a30d 100%)';
+            if (catContainer) catContainer.style.filter = 'drop-shadow(0 0 16px rgba(132, 204, 22, 0.6))';
+            if (bubble) {
+                bubble.style.background = '#f0fdf4';
+                bubble.style.color = '#14532d';
+                bubble.style.borderColor = '#84cc16';
+                bubble.innerText = "YAY! Super proud of you! Daily tasks completed! Glowy skin & 50kg goal ongoing! 🌸✨";
+            }
+        }
+    }
+
 
 
     // 🐾 Free-Walking Kiki Pet Engine (Walks around full screen!)
