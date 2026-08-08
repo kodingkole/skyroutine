@@ -96,14 +96,21 @@ class SkyRoutineApp {
             },
 
             historyLogs: [],
+            activeQuest: null,
+            completedQuestsCount: 0,
+            rewardsUnlocked: 0,
             settings: {
                 showCompletedItems: false,
-                wallpaperMode: false
+                wallpaperMode: false,
+                hologramMode: false,
+                voiceEnabled: true
             }
         };
 
         this.state = this.loadState();
         this.activeTimers = {};
+
+
         this.fastingInterval = null;
         
         this.mascotQuotes = [
@@ -180,11 +187,90 @@ class SkyRoutineApp {
         this.renderFastingWidget();
         this.renderPeriodWidget();
         this.renderTechWidget();
+        this.renderSurpriseQuestWidget();
         this.renderQuickNotesWidget();
         this.renderGoalsWidget();
         this.renderBirthdaysWidget();
         this.renderDonutChart();
         this.renderWallpaperState();
+    }
+
+    // 🎁 AI Surprise Quest Engine
+    renderSurpriseQuestWidget() {
+        const container = document.getElementById('surpriseQuestContainer');
+        if (!container) return;
+
+        const quest = this.state.activeQuest;
+        const rewards = this.state.rewardsUnlocked || 0;
+
+        if (!quest) {
+            container.innerHTML = `
+                <div style="text-align:center; padding:18px; background:var(--kiwi-50); border:2px dashed var(--kiwi-300); border-radius:18px;">
+                    <div style="font-size:2.2rem; margin-bottom:6px;">🎁</div>
+                    <div style="font-weight:800; font-size:1.05rem; color:var(--kiwi-800);">No Active Quest Drawn Today</div>
+                    <p style="font-size:0.84rem; color:var(--text-muted); margin:6px 0 14px 0;">Draw a spontaneous wholesome quest (Kindness, Mini-walk, Loved One Gift, or Tech concept)!</p>
+                    <button class="btn-primary-block" style="width:auto; padding:10px 24px; display:inline-block;" onclick="app.drawSurpriseQuest()">
+                        🎁 Draw Today's AI Surprise Quest!
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div style="background:linear-gradient(135deg, #ffffff 0%, #f7fee7 100%); border:2px solid var(--kiwi-400); border-radius:18px; padding:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-weight:800; font-size:1.1rem; color:var(--kiwi-800);">${quest.title}</div>
+                    <span class="badge-tag" style="background:#f472b6; color:white;">SURPRISE QUEST</span>
+                </div>
+                <p style="font-size:0.92rem; color:var(--text-main); font-weight:600; margin-bottom:14px;">${quest.desc}</p>
+                <div style="font-size:0.85rem; font-weight:700; color:#c2410c; background:#ffedd5; padding:8px 14px; border-radius:12px; margin-bottom:16px; display:inline-block;">
+                    🏆 <strong>Reward on Completion:</strong> ${quest.reward}
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-primary-block" style="flex:2;" onclick="app.completeSurpriseQuest()">
+                        ✓ Complete Quest & Claim Treat Voucher! 🎉
+                    </button>
+                    <button class="btn-icon-pill" style="flex:1; justify-content:center;" onclick="app.drawSurpriseQuest()">
+                        🔄 New Quest
+                    </button>
+                </div>
+            </div>
+            ${rewards > 0 ? `
+                <div style="margin-top:10px; font-size:0.85rem; font-weight:800; color:var(--kiwi-800); text-align:center;">
+                    🎉 Unlocked Reward Vouchers: ${rewards} x (Fuska / Chocolate Treat Day Unlocked!)
+                </div>
+            ` : ''}
+        `;
+    }
+
+    drawSurpriseQuest() {
+        window.cuteAudio.playFanfare();
+        this.triggerConfetti();
+
+        const randIndex = Math.floor(Math.random() * this.questPool.length);
+        this.state.activeQuest = this.questPool[randIndex];
+        this.saveState();
+        this.renderSurpriseQuestWidget();
+
+        this.showMascotDialogue(`🎁 New AI Surprise Quest Drawn: "${this.state.activeQuest.title}"! Complete it to unlock your Fuska/Chocolate Treat Voucher! 🌟`);
+    }
+
+    completeSurpriseQuest() {
+        if (!this.state.activeQuest) return;
+
+        window.cuteAudio.playFanfare();
+        this.triggerConfetti();
+
+        this.state.rewardsUnlocked = (this.state.rewardsUnlocked || 0) + 1;
+        this.state.completedQuestsCount = (this.state.completedQuestsCount || 0) + 1;
+        this.state.activeQuest = null;
+
+        this.saveState();
+        this.renderSurpriseQuestWidget();
+
+        this.showMascotDialogue("🎉 CONGRATULATIONS! Spontaneous Quest Completed! You unlocked 1 Fuska/Chocolate Treat Day Voucher! Super proud of you! ❤️🍫🍢");
     }
 
     // 🕒 Live Digital Clock
@@ -1216,6 +1302,102 @@ class SkyRoutineApp {
         const btnText = this.state.settings.showCompletedItems ? "Hide Completed Tasks" : "Show Completed Tasks";
         const btn = document.getElementById('toggleCompletedBtn');
         if (btn) btn.innerText = btnText;
+    }
+
+    // 🤖 2060 AI Voice Companion Engine (SpeechSynthesis API)
+    speakVoice(text) {
+        if (!this.state.settings.voiceEnabled) return;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); // stop previous speech
+            const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, ''); // strip emojis for smooth voice
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.2; // Cute slightly higher pitch voice
+            utterance.lang = 'en-US';
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    // 🧠 2060 AI Bio-Energy HUD Score
+    calculateBioEnergyScore() {
+        const namajDone = Object.values(this.state.namaj).filter(Boolean).length;
+        const waterL = this.state.checklist.waterLitersLogged || 0;
+        const noTea = this.state.checklist.noTea ? 10 : 0;
+        const noChoc = this.state.checklist.noChocolate ? 10 : 0;
+        const techDone = Object.values(this.state.techLearning).filter(Boolean).length;
+        
+        let score = 50 + (namajDone * 6) + (Math.min(3, waterL) * 5) + noTea + noChoc + (techDone * 2);
+        score = Math.min(100, Math.round(score));
+
+        const scoreEl = document.getElementById('bioEnergyScoreText');
+        const statusEl = document.getElementById('bioEnergyStatusText');
+
+        if (scoreEl) scoreEl.innerText = `${score}%`;
+        if (statusEl) {
+            if (score >= 90) statusEl.innerText = '⚡ Quantum Peak Energy & Radiance';
+            else if (score >= 70) statusEl.innerText = '🌟 High Vitality & Focused Mind';
+            else statusEl.innerText = '💧 Hydrate & Complete Routine to Boost';
+        }
+    }
+
+    // ⚡ 2060 Hologram Sci-Fi Mode Toggle
+    toggleHologramMode() {
+        const isHolo = document.body.classList.toggle('hologram-mode');
+        this.state.settings.hologramMode = isHolo;
+        this.saveState();
+        window.cuteAudio.playFanfare();
+        this.showMascotDialogue("⚡ 2060 Sci-Fi Hologram Matrix Mode Activated! 🌌");
+    }
+
+    // 🔮 2060 AI Future Simulator Modal
+    openFutureSimulator() {
+        window.cuteAudio.playFanfare();
+        this.triggerConfetti();
+
+        const currentDay = this.state.challenge.currentDay;
+        const remaining = 100 - currentDay;
+        const currentW = this.state.goals.currentWeightKg;
+        const lost = (this.state.goals.startWeightKg - currentW).toFixed(1);
+
+        const body = document.getElementById('futureSimulatorBody');
+        if (body) {
+            body.innerHTML = `
+                <div style="background:var(--kiwi-50); border:2px solid var(--kiwi-300); border-radius:18px; padding:20px; text-align:left;">
+                    <div style="font-family:'Outfit'; font-weight:800; font-size:1.3rem; color:var(--kiwi-800); margin-bottom:12px;">
+                        🔮 Day 100 Quantum AI Prediction Simulation
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:10px; font-weight:700; font-size:0.95rem;">
+                        <div style="background:white; padding:12px; border-radius:12px; border:1px solid var(--kiwi-200);">
+                            🎯 <strong>Target Weight:</strong> 50.0 kg <span style="color:#65a30d;">(100% Achieved! Tone & Healthy 🎉)</span>
+                        </div>
+                        <div style="background:white; padding:12px; border-radius:12px; border:1px solid var(--kiwi-200);">
+                            💼 <strong>Career Status:</strong> Senior Fullstack Developer <span style="color:#65a30d;">(Mastered HTML, CSS, Tailwind, Laravel, React, Next.js)</span>
+                        </div>
+                        <div style="background:white; padding:12px; border-radius:12px; border:1px solid var(--kiwi-200);">
+                            ✨ <strong>Skin Radiance Index:</strong> 99.8% Crystal Glow <span style="color:#65a30d;">(No Tea/Chocolate + 3L Water)</span>
+                        </div>
+                        <div style="background:white; padding:12px; border-radius:12px; border:1px solid var(--kiwi-200);">
+                            🧠 <strong>Financial & Mental Independence:</strong> 100% Peak Self-Confidence
+                        </div>
+                    </div>
+
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:14px;">
+                        <em>AI Prediction calculated based on your ${currentDay}-day consistency. Keep going! In ${remaining} days, your dream life is waiting!</em>
+                    </p>
+                </div>
+            `;
+        }
+
+        const modal = document.getElementById('futureSimulatorModalOverlay');
+        if (modal) modal.classList.add('active');
+        this.speakVoice("Welcome to year 2060 simulation! In 100 days your dream life, 50kg weight, and fullstack developer career will be 100 percent achieved!");
+    }
+
+    closeFutureSimulator() {
+        window.cuteAudio.playPop();
+        const modal = document.getElementById('futureSimulatorModalOverlay');
+        if (modal) modal.classList.remove('active');
     }
 
     showMascotDialogue(text) {

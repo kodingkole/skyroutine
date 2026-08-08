@@ -32,6 +32,12 @@
                 <span class="badge-tag" style="background:var(--kiwi-100); color:var(--kiwi-800); font-size:0.75rem;">Kiwi Edition</span>
             </div>
             <div class="nav-controls">
+                <button class="btn-icon-pill" style="background:linear-gradient(135deg, #84cc16, #65a30d); color:white;" onclick="app.openFutureSimulator()">
+                    <span>🔮</span> AI 2060 Future Simulator
+                </button>
+                <button class="btn-icon-pill" onclick="app.toggleHologramMode()">
+                    <span>⚡</span> 2060 Hologram Mode
+                </button>
                 <button class="btn-icon-pill" onclick="app.toggleCompletedItemsVisibility()" id="toggleCompletedBtn">
                     <span>👁️</span> Show Completed Tasks
                 </button>
@@ -57,7 +63,26 @@
             </div>
         </nav>
 
+        <!-- 🧠 AI 2060 Bio-Energy & Mental Vitality HUD Card -->
+        <div class="bio-energy-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div>
+                    <div style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; opacity:0.9;">
+                        🤖 AI 2060 Bio-Energy & Mind Vitality HUD
+                    </div>
+                    <div id="bioEnergyStatusText" style="font-size:1.05rem; font-weight:700; margin-top:2px; color:#ecfccb;">
+                        ⚡ Quantum Peak Energy & Radiance
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div id="bioEnergyScoreText" class="bio-energy-score">88%</div>
+                    <span class="badge-tag" style="background:rgba(255,255,255,0.25); color:white;">OPTIMAL</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Live Clock & Weather Bar -->
+
         <div style="background:var(--glass-bg); backdrop-filter:blur(18px); border:1.5px solid var(--glass-border); border-radius:var(--radius-md); padding:16px 26px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; box-shadow:var(--glass-shadow);">
             <div style="display:flex; align-items:center; gap:14px;">
                 <span style="font-size:2.2rem;">🕒</span>
@@ -198,8 +223,22 @@
                     </div>
                 </div>
 
-                <!-- 📝 One-Day Quick Notes & Reminders (Tomorrow's Tasks & Memo) -->
+                <!-- 🎁 2060 AI Surprise Mystery Quests & Reward Vouchers -->
                 <div class="card-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title">
+                            <span>🎁</span> AI Surprise Mystery Quests & Good Habits
+                        </h2>
+                        <span class="widget-badge">Spontaneous Quests</span>
+                    </div>
+                    <div id="surpriseQuestContainer">
+                        <!-- Rendered dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- 📝 One-Day Quick Notes & Reminders -->
+                <div class="card-widget">
+
                     <div class="widget-header">
                         <h2 class="widget-title">
                             <span>📝</span> One-Day Quick Notes & Reminders
@@ -323,7 +362,25 @@
 
     </div>
 
-    <!-- 📜 100-Day Challenge History Drawer Modal -->
+    <!-- 🔮 2060 AI Future Simulator Modal -->
+    <div class="modal-overlay" id="futureSimulatorModalOverlay">
+        <div class="modal-box simulator-box" style="max-width:580px; text-align:center;">
+            <div class="modal-header">
+                <div class="modal-icon">🔮</div>
+                <h2 class="modal-title" style="color:var(--kiwi-800);">AI 2060 Quantum Future Simulator</h2>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-top:4px;">100-Day Life & Career Prediction Engine</p>
+            </div>
+
+            <div class="modal-body" id="futureSimulatorBody">
+                <!-- Rendered dynamically via JS -->
+            </div>
+
+            <button class="btn-primary-block" onclick="app.closeFutureSimulator()">
+                Back to Present & Keep Shining 🚀
+            </button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="historyModalOverlay">
         <div class="modal-box" style="max-width:560px;">
             <div class="modal-header">

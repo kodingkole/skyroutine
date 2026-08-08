@@ -963,8 +963,70 @@ body.wallpaper-mode .hide-in-wallpaper {
     color: var(--text-muted);
 }
 
-.legend-color {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+/* ==========================================================================
+   🤖 2060 Sci-Fi Hologram & Cyber-Kiwi Futuristic Theme Engine
+   ========================================================================== */
+
+body.hologram-mode {
+    background: linear-gradient(135deg, #051908 0%, #0a290d 50%, #031405 100%) !important;
+    color: #a3e635 !important;
 }
+
+body.hologram-mode .card-widget,
+body.hologram-mode .top-nav,
+body.hologram-mode .mascot-panel,
+body.hologram-mode .hero-banner {
+    background: rgba(10, 41, 13, 0.85) !important;
+    border-color: #a3e635 !important;
+    box-shadow: 0 0 25px rgba(163, 230, 53, 0.25), inset 0 0 15px rgba(163, 230, 53, 0.1) !important;
+    color: #ecfccb !important;
+}
+
+body.hologram-mode .widget-title,
+body.hologram-mode .brand,
+body.hologram-mode .mascot-name {
+    color: #a3e635 !important;
+    text-shadow: 0 0 10px rgba(163, 230, 53, 0.6);
+}
+
+body.hologram-mode .btn-icon-pill {
+    background: #0d3810 !important;
+    color: #a3e635 !important;
+    border-color: #a3e635 !important;
+    box-shadow: 0 0 12px rgba(163, 230, 53, 0.3) !important;
+}
+
+body.hologram-mode .progress-fill {
+    background: linear-gradient(90deg, #a3e635 0%, #4d7c0f 100%) !important;
+    box-shadow: 0 0 20px #a3e635 !important;
+}
+
+/* 🧠 AI 2060 Bio-Energy HUD Card */
+.bio-energy-card {
+    background: linear-gradient(135deg, #1a2e05 0%, #3f6212 100%);
+    border: 2px solid #a3e635;
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    color: white;
+    box-shadow: 0 12px 30px rgba(101, 163, 13, 0.3);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bio-energy-score {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #a3e635;
+    text-shadow: 0 0 15px rgba(163, 230, 53, 0.5);
+}
+
+/* 🔮 2060 Future Simulator Modal Box */
+.simulator-box {
+    background: linear-gradient(135deg, #ffffff 0%, #f7fee7 100%);
+    border: 3px solid var(--kiwi-400);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+}
+
