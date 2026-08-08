@@ -18,12 +18,13 @@ class SkyRoutineApp {
                 targetWeightKg: 50.0,
                 currentWeightKg: 66.0,
                 weightHistory: [
-                    { date: '2026-08-08', weight: 66.0 }
+                    { date: 'Start', weight: 66.0 }
                 ],
                 jobApplicationsCount: 0,
                 contentIdeasCount: 0,
                 confidenceScore: 85
             },
+
 
             namaj: {
                 fajr: false,
@@ -148,12 +149,12 @@ class SkyRoutineApp {
                     parsed.lastActiveDate = todayStr;
                 }
                 
-                // Force update weight state to 66kg start if legacy state existed
-                if (!parsed.goals || parsed.goals.startWeightKg < 60) {
+                // Force update weight state to 66kg start & clear legacy dummy points
+                if (!parsed.goals || !parsed.goals.startWeightKg || parsed.goals.startWeightKg !== 66.0) {
                     parsed.goals = {
                         startWeightKg: 66.0,
                         targetWeightKg: 50.0,
-                        currentWeightKg: (parsed.goals && parsed.goals.currentWeightKg > 50) ? parsed.goals.currentWeightKg : 66.0,
+                        currentWeightKg: 66.0,
                         weightHistory: [
                             { date: 'Start', weight: 66.0 }
                         ],
@@ -162,6 +163,7 @@ class SkyRoutineApp {
                         confidenceScore: (parsed.goals && parsed.goals.confidenceScore) || 85
                     };
                 }
+
 
                 return { ...this.defaultState, ...parsed };
             }
