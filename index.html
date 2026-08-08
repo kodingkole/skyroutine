@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyRoutine 🐾 | 100-Day Life & Career Transformation</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Ambient Sky Cloud Bubbles Background -->
+    <div class="bg-decoration">
+        <div class="cloud-bubble cloud-1"></div>
+        <div class="cloud-bubble cloud-2"></div>
+        <div class="cloud-bubble cloud-3"></div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- Top Navigation Bar -->
+        <nav class="top-nav">
+            <div class="brand">
+                <span class="brand-icon">🐾</span>
+                <span>SkyRoutine</span>
+                <span class="badge-tag" style="background:var(--sky-100); color:var(--sky-700); font-size:0.75rem;">100 Days Challenge</span>
+            </div>
+            <div class="nav-controls">
+                <button class="btn-icon-pill" onclick="app.openNightReflectionModal()">
+                    <span>🌙</span> Night Reflection
+                </button>
+                <button class="btn-icon-pill" onclick="app.triggerHourlyFairyReminder()">
+                    <span>🧚‍♀️</span> Test 1-Hr Pop
+                </button>
+                <button class="btn-icon-pill" onclick="app.exportBackupData()">
+                    <span>💾</span> Export Backup
+                </button>
+                <label class="btn-icon-pill" style="cursor:pointer;">
+                    <span>📂</span> Import Data
+                    <input type="file" accept=".json" onchange="app.importBackupData(event)" style="display:none;" />
+                </label>
+                <button class="btn-icon-pill" onclick="app.toggleWallpaperMode()">
+                    <span>🖥️</span> Wallpaper Mode
+                </button>
+                <button class="btn-icon-pill" onclick="app.advanceDay()">
+                    <span>⏩</span> Next Day
+                </button>
+            </div>
+        </nav>
+
+
+        <!-- Hero 100-Day Transformation Counter Banner -->
+        <header class="hero-banner">
+            <div class="hero-content">
+                <div class="hero-title-group">
+                    <h1>
+                        <span>✨ 100 Days Transformation</span>
+                        <span class="badge-tag" id="dayCounterBadge">DAY 1 OF 100</span>
+                    </h1>
+                    <p class="hero-subtitle">Financial Independence • Mental Strength • 50kg Target Weight • Fullstack Developer Goal</p>
+                    
+                    <div class="progress-box">
+                        <div class="progress-header">
+                            <span>Challenge Progress</span>
+                            <span id="progressPercentText">1%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressBarFill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-stats-cards">
+                    <div class="stat-pill">
+                        <div class="stat-value" id="currentDayText">Day 1</div>
+                        <div class="stat-label">Current Progress</div>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="stat-value" id="remainingDaysText">99 Days</div>
+                        <div class="stat-label">Days Remaining</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Column: Daily Routine Widgets -->
+            <div class="widget-column">
+
+                <!-- 📊 Daily Progress Donut Visualizer -->
+                <div class="card-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title">
+                            <span>📊</span> Daily Progress Breakdown
+                        </h2>
+                        <span class="widget-badge">Live Analytics</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="progressChartCanvas"></canvas>
+                    </div>
+                    <div class="chart-legend" id="chartLegend">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- 🕌 5 Waqt Namaj Widget -->
+                <div class="card-widget">
+
+                    <div class="widget-header">
+                        <h2 class="widget-title">
+                            <span>🕌</span> 5 Waqt Namaj Tracker
+                        </h2>
+                        <span class="widget-badge" id="namajBadge">0/5 Done</span>
+                    </div>
+                    <div class="namaj-grid" id="namajGrid">
+                        <!-- Dynamic Namaj Cards rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- ⏱️ Daily Work, Study & Practice Timers -->
+                <div class="card-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title">
+                            <span>⏱️</span> Work, Study & Practice Timers
+                        </h2>
+                        <span class="widget-badge">Daily Targets</span>
+                    </div>
+                    <div class="timers-grid" id="timersGrid">
+                        <!-- Dynamic Timers rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- 💅 Daily Care, Glowy Skin Diet & Housekeeping Checklist -->
+                <div class="card-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title">
+                            <span>✨</span> Care, Glowy Skin Diet & Housekeeping
+                        </h2>
+                        <span class="widget-badge">No Tea • No Chocolate • 3L Water</span>
+                    </div>
+                    <div class="checklist-container" id="checklistContainer">
+                        <!-- Dynamic Checklist rendered via JS -->
+                    </div>
+                </div>
+
+
+                <!-- 💻 Tech Skill Mastery Roadmap -->
+                <div class="card-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title">
+                            <span>💻</span> Daily Tech Mastery (Learning Roadmap)
+                        </h2>
+                        <span class="widget-badge">HTML • CSS • Tailwind • Laravel • React • Next.js</span>
+                    </div>
+                    <div class="tech-grid" id="techGrid">
+                        <!-- Dynamic Tech Cards rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- 🎯 Personal Transformation Goals (50kg Weight, Content Creator, Independence) -->
+                <div class="card-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title">
+                            <span>🎯</span> Personal Goals & Weight Target (50 kg)
+                        </h2>
+                        <span class="widget-badge">Life & Self Care</span>
+                    </div>
+                    <div id="goalsContainer">
+                        <!-- Dynamic Goals rendered via JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Sticky Mascot Panel -->
+            <div class="widget-column">
+                <div class="mascot-panel">
+                    
+                    <!-- Dynamic Speech Bubble -->
+                    <div class="speech-bubble" id="mascotSpeechBubble">
+                        Assalamu Alaikum! Ajker routine complete krte ready to? 🐾✨
+                    </div>
+
+                    <!-- SVG Animated Mascot Avatar (Cute Magical Sky Cat) -->
+                    <div class="mascot-avatar" onclick="app.triggerMascotRandomTalk()">
+                        <svg class="cat-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Outer Glow / Halo -->
+                            <circle cx="100" cy="100" r="90" fill="#E0F2FE" opacity="0.6"/>
+                            <!-- Cat Ears -->
+                            <polygon points="45,75 25,25 80,45" fill="#38BDF8" />
+                            <polygon points="50,70 35,35 75,50" fill="#FFEDD5" />
+                            <polygon points="155,75 175,25 120,45" fill="#38BDF8" />
+                            <polygon points="150,70 165,35 125,50" fill="#FFEDD5" />
+                            <!-- Cat Head -->
+                            <ellipse cx="100" cy="105" rx="65" ry="55" fill="#FFFFFF" stroke="#0EA5E9" stroke-width="4" />
+                            <!-- Cat Eyes -->
+                            <ellipse cx="75" cy="95" rx="8" ry="11" fill="#0EA5E9" />
+                            <ellipse cx="125" cy="95" rx="8" ry="11" fill="#0EA5E9" />
+                            <circle cx="77" cy="92" r="3" fill="#FFFFFF" />
+                            <circle cx="127" cy="92" r="3" fill="#FFFFFF" />
+                            <!-- Cheeks -->
+                            <ellipse cx="60" cy="110" rx="10" ry="6" fill="#F472B6" opacity="0.5" />
+                            <ellipse cx="140" cy="110" rx="10" ry="6" fill="#F472B6" opacity="0.5" />
+                            <!-- Nose & Mouth -->
+                            <polygon points="100,107 95,112 105,112" fill="#F472B6" />
+                            <path d="M95 116 Q100 122 105 116" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round" fill="none" />
+                            <!-- Whiskers -->
+                            <line x1="30" y1="102" x2="55" y2="105" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+                            <line x1="25" y1="112" x2="55" y2="112" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+                            <line x1="170" y1="102" x2="145" y2="105" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+                            <line x1="175" y1="112" x2="145" y2="112" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+                            <!-- Paw -->
+                            <ellipse cx="100" cy="155" rx="22" ry="14" fill="#FFFFFF" stroke="#0EA5E9" stroke-width="3" />
+                            <circle cx="92" cy="155" r="3" fill="#F472B6" />
+                            <circle cx="100" cy="153" r="3" fill="#F472B6" />
+                            <circle cx="108" cy="155" r="3" fill="#F472B6" />
+                        </svg>
+                    </div>
+
+                    <div class="mascot-name">Mochi 🐾</div>
+                    <div class="mascot-status-badge">Your Magic Transformation Guide</div>
+
+                    <button class="btn-mascot-talk" onclick="app.triggerMascotRandomTalk()">
+                        <span>💬</span> Talk to Mochi
+                    </button>
+                    <button class="btn-mascot-talk" style="margin-top:8px; background:linear-gradient(135deg, #f43f5e 0%, #fb7185 100%); color:white;" onclick="app.scoldUserForMissingTasks()">
+                        <span>😾</span> Check & Scold Me!
+                    </button>
+                    <button class="btn-mascot-talk" style="margin-top:8px; background:var(--sky-100); color:var(--sky-700)" onclick="app.openNightReflectionModal()">
+                        <span>🌙</span> Night Reflection Pop-Up
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 🧚‍♀️ Hourly PC Fairy Reminder Pop-Up Modal -->
+    <div class="fairy-modal-overlay" id="fairyModalOverlay">
+        <div class="fairy-modal-box">
+            <div class="fairy-avatar">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="#E0F2FE" />
+                    <!-- Wings -->
+                    <ellipse cx="28" cy="40" rx="20" ry="12" fill="#BAE6FD" opacity="0.8" transform="rotate(-30 28 40)" />
+                    <ellipse cx="72" cy="40" rx="20" ry="12" fill="#BAE6FD" opacity="0.8" transform="rotate(30 72 40)" />
+                    <!-- Face -->
+                    <circle cx="50" cy="48" r="24" fill="#FFFFFF" stroke="#0EA5E9" stroke-width="2.5" />
+                    <!-- Eyes & Smile -->
+                    <circle cx="43" cy="45" r="3" fill="#0EA5E9" />
+                    <circle cx="57" cy="45" r="3" fill="#0EA5E9" />
+                    <path d="M44 53 Q50 58 56 53" stroke="#F472B6" stroke-width="2" stroke-linecap="round" fill="none" />
+                    <!-- Fairy Crown / Sparkles -->
+                    <path d="M40 24 L50 16 L60 24 L50 21 Z" fill="#FBBF24" />
+                </svg>
+            </div>
+            <div class="fairy-msg-title">🧚‍♀️ Hourly Sky Fairy Reminder!</div>
+            <div class="goals-reminder-pill">🎯 Goal Focus: 50kg Weight • Dream Developer Job • Financial Independence</div>
+            <div class="fairy-msg-body">
+                Hey! Exactly 1 hour has passed! 🌸<br>
+                Deep breath nao, ektu pani khao, r 5 Waqt Namaj & Coding practice complete korecho kina dekho! Mochi & Fairy tomak protidin target reach krte help krbe!
+            </div>
+            <button class="btn-primary-block" onclick="app.closeFairyModal()">
+                Back to Routines & Goals ✨
+            </button>
+        </div>
+    </div>
+
+
+    <!-- 🌙 Night Reflection Pop-Up Modal -->
+    <div class="modal-overlay" id="nightReflectionModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-icon">🌙</div>
+                <h2 class="modal-title">Night Reflection & Self-Check</h2>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-top:4px;">Daily night reflection for peaceful mind & healthy discipline</p>
+            </div>
+
+            <div class="modal-body">
+                <!-- Question 1: Misbehavior / Temper check ("Khabar behaviour krini ajk") -->
+                <div class="reflection-question">
+                    <label>1. Today did you control anger & avoid misbehaving with anyone? ("Khabar behaviour krini ajk")</label>
+                    <div class="radio-group">
+                        <label class="radio-btn">
+                            <input type="radio" name="behaviorRadio" value="yes" checked style="display:none;" />
+                            <span>YES, Calm & Polite ✨</span>
+                        </label>
+                        <label class="radio-btn">
+                            <input type="radio" name="behaviorRadio" value="no" style="display:none;" />
+                            <span>Try better tomorrow 🌸</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 2: Night Dinner Skip / Light eating -->
+                <div class="reflection-question">
+                    <label>2. Night Dinner status (Skipped or kept very light as planned)?</label>
+                    <div class="radio-group">
+                        <label class="radio-btn">
+                            <input type="radio" name="dinnerRadio" value="yes" checked style="display:none;" />
+                            <span>YES, Skipped / Light 🥗</span>
+                        </label>
+                        <label class="radio-btn">
+                            <input type="radio" name="dinnerRadio" value="no" style="display:none;" />
+                            <span>Ate normal meal 🍲</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 3: Early Sleep Commitment -->
+                <div class="reflection-question">
+                    <label>3. Ready to sleep early & wake up fresh for Fajr?</label>
+                    <div style="font-size:0.88rem; color:var(--sky-700); font-weight:700;">
+                        ✓ Yes! Early sleep ensures beauty, health & energy! 💤
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary-block" onclick="app.saveNightReflection()">
+                Save Reflection & Sleep Peacefully 🌙
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
