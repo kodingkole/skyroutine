@@ -1,10 +1,10 @@
 /**
- * SkyRoutine 🐾 - Kiwi Edition App Engine v3
+ * SkyRoutine 🐾 - Kiwi Edition App Engine v4
  */
 
 class SkyRoutineApp {
     constructor() {
-        this.STORAGE_KEY = 'sky_routine_app_data_v3';
+        this.STORAGE_KEY = 'sky_routine_app_data_v4';
         
         // Initial default state
         this.defaultState = {
@@ -44,7 +44,8 @@ class SkyRoutineApp {
                 startTime: null,
                 elapsedSec: 0,
                 running: false,
-                done: false
+                done: false,
+                fastsCountThisWeek: 0
             },
             periodTracker: {
                 lastPeriodStart: new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0], // 7 days ago
@@ -1051,8 +1052,10 @@ class SkyRoutineApp {
                         <input type="number" step="0.5" id="weightInput" value="${currentW}" style="width:110px; padding:8px 12px; border-radius:10px; border:1.5px solid var(--kiwi-300); font-weight:700; font-size:1rem;" />
                     </div>
                     <button class="btn-icon-pill" style="background:var(--kiwi-600); color:white; border:none; padding:10px 22px; font-size:0.92rem;" onclick="app.submitWeight()">Submit Weight Log</button>
+                    <button class="btn-icon-pill" style="background:var(--kiwi-100); color:var(--kiwi-800); border:none; padding:10px 14px; font-size:0.82rem;" onclick="app.resetWeightHistory()">🧹 Reset Weight Data</button>
                 </div>
             </div>
+
 
             <!-- High-End Canvas Area Line Chart Wrapper -->
             <div class="weight-chart-wrapper">
@@ -1225,6 +1228,18 @@ class SkyRoutineApp {
         }
     }
 
+    resetWeightHistory() {
+        window.cuteAudio.playPop();
+        this.state.goals.startWeightKg = 66.0;
+        this.state.goals.currentWeightKg = 66.0;
+        this.state.goals.weightHistory = [
+            { date: 'Start', weight: 66.0 }
+        ];
+        this.saveState();
+        this.renderGoalsWidget();
+        this.showMascotDialogue("Weight data reset strictly to 66.0 kg! Zero dummy data! ⚖️✨");
+    }
+
     submitWeight() {
         const startVal = parseFloat(document.getElementById('startWeightInput')?.value || 66.0);
         const val = parseFloat(document.getElementById('weightInput')?.value);
@@ -1235,7 +1250,9 @@ class SkyRoutineApp {
 
             if (!this.state.goals.weightHistory) this.state.goals.weightHistory = [];
             
-            // Add entry to history if different or new
+            // Clean out legacy dummy points like 58, 56, 54
+            this.state.goals.weightHistory = this.state.goals.weightHistory.filter(h => h.weight !== 58 && h.weight !== 56 && h.weight !== 54);
+
             this.state.goals.weightHistory.push({
                 date: new Date().toISOString().split('T')[0].slice(5),
                 weight: val
@@ -1252,6 +1269,7 @@ class SkyRoutineApp {
             this.showMascotDialogue(`Awesome! Weight logged (${val} kg)! Total ${lost} kg lost so far! Only ${remaining} kg left to reach 50kg! 🎉✨`);
         }
     }
+
 
 
 
