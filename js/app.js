@@ -245,7 +245,9 @@ class SkyRoutineApp {
         this.renderWallpaperState();
         this.checkMyBirthday();
         this.startKikiFreeWalk();
+        this.updateKikiOutfit();
     }
+
 
     // 🐾 Free-Walking Kiki Pet Engine (Walks around full screen!)
     startKikiFreeWalk() {
@@ -367,23 +369,80 @@ class SkyRoutineApp {
         if (modal) modal.classList.remove('active');
     }
 
-    // 🐱 Interactive Pet Kiki Cat Creature
+    // 📢 Cute Scolding Engine ("Boka Dibe")
+    triggerCuteScolding() {
+        window.cuteAudio.playWarning();
+        const mascot = document.querySelector('.magical-kiwi-cat');
+        if (mascot) {
+            mascot.style.transform = 'rotate(-18deg) scale(1.15)';
+            setTimeout(() => mascot.style.transform = 'none', 500);
+        }
+
+        const scolds = [
+            "Ei! Fajr/Namaj porecho? Water 3L kheyecho? 😾 Ajke skin glow na korle amar boka khabe! Taratari finish koro!",
+            "Khabar skip kora jabe na, kintu dudh cha & fast food agid koro! 😾 Fasting & coding focus thik rakho!",
+            "Chul achrano hoise? Room ghuchano hoise? 😾 Amon alsemi korle 50kg weight hobe kivabe! Utho, utho!",
+            "Coding timer chalu koro! Html, CSS, Laravel sikhba na? 😾 Kiki sob dekhche, dustami bondho!"
+        ];
+        const rand = scolds[Math.floor(Math.random() * scolds.length)];
+        this.showMascotDialogue(rand);
+    }
+
+    // 🐱 Interactive Pet Kiki Cat Creature with Flower 🌸 & Chocolate 🍫 Gift Animation
     petKikiCat() {
         window.cuteAudio.playChime();
         this.triggerConfetti();
-        const mascot = document.querySelector('.magical-kiwi-cat');
-        if (mascot) {
-            mascot.style.transform = 'scale(1.2) rotate(10deg)';
-            setTimeout(() => mascot.style.transform = 'none', 400);
+
+        // Spawn floating Flower 🌸 & Chocolate 🍫 Gifts
+        const petEl = document.querySelector('.magical-kiwi-cat');
+        const rect = petEl ? petEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2 };
+
+        const gifts = ['🌸', '🍫', '💖', '🌺', '🍫'];
+        gifts.forEach((item, i) => {
+            setTimeout(() => {
+                const giftEl = document.createElement('div');
+                giftEl.className = 'floating-pet-gift';
+                giftEl.innerText = item;
+                giftEl.style.left = `${rect.left + 20 + (i * 18)}px`;
+                giftEl.style.top = `${rect.top - 10}px`;
+                document.body.appendChild(giftEl);
+                setTimeout(() => giftEl.remove(), 1600);
+            }, i * 150);
+        });
+
+        if (petEl) {
+            petEl.style.transform = 'scale(1.25) rotate(10deg)';
+            setTimeout(() => petEl.style.transform = 'none', 450);
         }
+
         const dialogues = [
-            "Purrrrr~ I love you! You are doing amazing on your 100-Day Transformation! 🐱💖",
-            "Meow! Remember to drink 3L water today & stay focused on 50kg goal! 🥝✨",
-            "You pet me! Yay! Day 1 starts 9th August! Let's conquer the world together! 🌟"
+            "Awww! Thank you so much for the beautiful flower 🌸 and chocolate 🍫! I love you so much! 🐱💖",
+            "Purrrrr~ Yum! Flower 🌸 and chocolate 🍫 gift for me! You are the sweetest! Let's reach 50kg & developer goal together! 🌸✨",
+            "Meow! Receiving your flower 🌸 and chocolate 🍫 makes me super happy! Day 1 starts 9th August! 🌟"
         ];
         const rand = dialogues[Math.floor(Math.random() * dialogues.length)];
         this.showMascotDialogue(rand);
     }
+
+    // 👗 Dynamic Outfit & Getup Engine (Weather, Mood & Time based!)
+    updateKikiOutfit() {
+        const hour = new Date().getHours();
+        const weatherCond = (this.state.weather.condition || '').toLowerCase();
+        
+        const outfitEls = document.querySelectorAll('.kiki-accessory-container');
+        outfitEls.forEach(container => {
+            if (hour >= 21 || hour < 6) {
+                container.innerHTML = '<span class="kiki-accessory kiki-sleep-cap">💤</span>'; // Night Sleep Cap
+            } else if (weatherCond.includes('rain') || weatherCond.includes('cloud')) {
+                container.innerHTML = '<span class="kiki-accessory kiki-umbrella">☂️</span>'; // Rainy Umbrella
+            } else if (hour >= 6 && hour < 18) {
+                container.innerHTML = '<span class="kiki-accessory kiki-sunglasses">🕶️</span>'; // Sunny Sunglasses
+            } else {
+                container.innerHTML = '<span class="kiki-accessory kiki-crown">👑</span>'; // Golden Crown
+            }
+        });
+    }
+
 
     // 🏆 100-Day Challenge Banner (Day 1 starts 9th August 2026)
     renderChallengeBanner() {
