@@ -57,8 +57,28 @@
             </div>
         </nav>
 
+        <!-- Live Clock & Weather Bar -->
+        <div style="background:var(--glass-bg); backdrop-filter:blur(18px); border:1.5px solid var(--glass-border); border-radius:var(--radius-md); padding:16px 26px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; box-shadow:var(--glass-shadow);">
+            <div style="display:flex; align-items:center; gap:14px;">
+                <span style="font-size:2.2rem;">🕒</span>
+                <div>
+                    <div id="liveClockTime" style="font-family:'Outfit', sans-serif; font-weight:800; font-size:1.6rem; color:var(--kiwi-800); line-height:1.1;">00:00:00 AM</div>
+                    <div id="liveClockDate" style="font-size:0.84rem; font-weight:600; color:var(--text-muted);">Saturday, 8 August 2026</div>
+                </div>
+            </div>
+
+            <div id="weatherDisplay" style="display:flex; align-items:center;">
+                <span style="font-size:1.6rem; margin-right:6px;">☀️</span>
+                <div>
+                    <div style="font-weight:800; font-size:1.05rem; color:var(--kiwi-800);">30°C • Sunny Sky</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">Dhaka, Bangladesh</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Hero 100-Day Transformation Counter Banner -->
         <header class="hero-banner">
+
             <div class="hero-content">
                 <div class="hero-title-group">
                     <h1>
@@ -178,8 +198,28 @@
                     </div>
                 </div>
 
+                <!-- 📝 One-Day Quick Notes & Reminders (Tomorrow's Tasks & Memo) -->
+                <div class="card-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title">
+                            <span>📝</span> One-Day Quick Notes & Reminders
+                        </h2>
+                        <span class="widget-badge">1-Day Temporary Memo</span>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-bottom:16px;">
+                        <input type="text" id="quickNoteInput" placeholder="Add a note or tomorrow's task memo..." style="flex:1; padding:10px 16px; border-radius:var(--radius-sm); border:1.5px solid var(--kiwi-200); font-weight:600;" onkeypress="if(event.key==='Enter') app.addQuickNote()" />
+                        <button class="btn-icon-pill" style="background:var(--kiwi-600); color:white; border:none;" onclick="app.addQuickNote()">+ Add Note</button>
+                    </div>
+
+                    <div id="quickNotesContainer">
+                        <!-- Dynamic Quick Notes rendered via JS -->
+                    </div>
+                </div>
+
                 <!-- 💻 Tech Skill Mastery Roadmap -->
                 <div class="card-widget">
+
                     <div class="widget-header">
                         <h2 class="widget-title">
                             <span>💻</span> Daily Tech Mastery (Learning Roadmap)

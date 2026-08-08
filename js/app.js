@@ -71,6 +71,13 @@ class SkyRoutineApp {
                 { id: '3', name: 'Sumi', date: '05-08', type: 'Birthday', avatar: '✨', phone: '8801900000000' },
                 { id: '4', name: "Ma, Baba & Khadija Apu's Anniversary", date: '11-21', type: 'Anniversary', avatar: '💍', phone: '8801700000000' }
             ],
+            quickNotes: [], // Array of one-day notes: { id, text, createdAt }
+            weather: {
+                temp: '--',
+                condition: 'Fetching weather...',
+                icon: '🌤️',
+                city: 'Dhaka'
+            },
             reflections: {
                 badBehaviorAvoided: true,
                 dinnerSkipped: true,
@@ -78,6 +85,7 @@ class SkyRoutineApp {
                 glowySkinCareDone: true,
                 lastSubmittedDate: null
             },
+
             historyLogs: [],
             settings: {
                 showCompletedItems: false,
@@ -146,6 +154,9 @@ class SkyRoutineApp {
     init() {
         this.renderAll();
         this.bindEvents();
+        this.startLiveClock();
+        this.fetchLiveWeather();
+        this.cleanupExpiredNotes();
         this.checkNightReflectionTrigger();
         this.checkTodayBirthdays();
         this.resumeFastingTimerIfNeeded();
@@ -160,11 +171,144 @@ class SkyRoutineApp {
         this.renderFastingWidget();
         this.renderPeriodWidget();
         this.renderTechWidget();
+        this.renderQuickNotesWidget();
         this.renderGoalsWidget();
         this.renderBirthdaysWidget();
         this.renderDonutChart();
         this.renderWallpaperState();
     }
+
+    // 🕒 Live Digital Clock
+    startLiveClock() {
+        const updateClock = () => {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            const clockEl = document.getElementById('liveClockTime');
+            const dateEl = document.getElementById('liveClockDate');
+
+            if (clockEl) clockEl.innerText = timeStr;
+            if (dateEl) dateEl.innerText = dateStr;
+        };
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    }
+
+    // 🌤️ Live Weather Forecast (Open-Meteo Free API)
+    async fetchLiveWeather() {
+        try {
+            // Default location: Dhaka (23.8103, 90.4125)
+            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current_weather=true');
+            const data = await res.json();
+            
+            if (data && data.current_weather) {
+                const temp = Math.round(data.current_weather.temperature);
+                const code = data.current_weather.weathercode;
+                
+                let icon = '☀️';
+                let cond = 'Sunny Sky';
+
+                if (code >= 1 && code <= 3) { icon = '⛅'; cond = 'Partly Cloudy'; }
+                else if (code >= 45 && code <= 48) { icon = '🌫️'; cond = 'Foggy'; }
+                else if (code >= 51 && code <= 67) { icon = '🌧️'; cond = 'Rainy'; }
+                else if (code >= 80 && code <= 82) { icon = '🌦️'; cond = 'Showers'; }
+                else if (code >= 95) { icon = '⛈️'; cond = 'Thunderstorm'; }
+
+                const weatherEl = document.getElementById('weatherDisplay');
+                if (weatherEl) {
+                    weatherEl.innerHTML = `
+                        <span style="font-size:1.6rem; margin-right:6px;">${icon}</span>
+                        <div>
+                            <div style="font-weight:800; font-size:1.05rem; color:var(--kiwi-800);">${temp}°C • ${cond}</div>
+                            <div style="font-size:0.75rem; color:var(--text-muted);">Dhaka, Bangladesh</div>
+                        </div>
+                    `;
+                }
+            }
+        } catch (e) {
+            console.log("Weather fetch fallback", e);
+        }
+    }
+
+    // 📝 One-Day Quick Notes & Reminders
+    renderQuickNotesWidget() {
+        const container = document.getElementById('quickNotesContainer');
+        if (!container) return;
+
+        const notes = this.state.quickNotes || [];
+
+        if (notes.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; color:var(--text-muted); padding:16px;">
+                    <div style="font-size:1.8rem; margin-bottom:4px;">📝</div>
+                    <div style="font-weight:700; font-size:0.92rem;">No Quick Notes Added For Today/Tomorrow</div>
+                    <p style="font-size:0.78rem; margin-top:2px;">Add 1-day temporary notes or tomorrow's task reminders below!</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        notes.forEach(n => {
+            html += `
+                <div class="checklist-item" style="background:#ffffff; border-color:var(--kiwi-200); margin-bottom:8px;">
+                    <div class="checklist-left">
+                        <span style="font-size:1.2rem;">📌</span>
+                        <span class="checklist-text" style="font-size:0.92rem;">${n.text}</span>
+                    </div>
+                    <button class="btn-icon-pill" style="padding:4px 10px; font-size:0.78rem; background:var(--kiwi-100); color:var(--kiwi-800); border:none;" onclick="app.deleteQuickNote('${n.id}')">
+                        ✓ Clear
+                    </button>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    addQuickNote() {
+        const input = document.getElementById('quickNoteInput');
+        if (!input) return;
+
+        const text = input.value.trim();
+        if (!text) return;
+
+        if (!this.state.quickNotes) this.state.quickNotes = [];
+
+        this.state.quickNotes.push({
+            id: Date.now().toString(),
+            text: text,
+            createdAt: new Date().toISOString()
+        });
+
+        input.value = '';
+        this.saveState();
+        this.renderQuickNotesWidget();
+        window.cuteAudio.playChime();
+        this.showMascotDialogue("One-Day note added! It will stay handy for today/tomorrow! 📝✨");
+    }
+
+    deleteQuickNote(id) {
+        this.state.quickNotes = (this.state.quickNotes || []).filter(n => n.id !== id);
+        this.saveState();
+        this.renderQuickNotesWidget();
+        window.cuteAudio.playPop();
+    }
+
+    cleanupExpiredNotes() {
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        const now = Date.now();
+        if (this.state.quickNotes) {
+            this.state.quickNotes = this.state.quickNotes.filter(n => {
+                const created = new Date(n.createdAt).getTime();
+                return (now - created) < (oneDayMs * 2); // Auto clear notes older than ~24-48 hrs
+            });
+            this.saveState();
+        }
+    }
+
 
     // Challenge Progress Banner
     renderChallengeBanner() {
