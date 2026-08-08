@@ -314,6 +314,45 @@ class SkyRoutineApp {
         }, 14000);
     }
 
+    // 🕌 5 Waqt Namaj Tracker
+    renderNamajWidget() {
+        const container = document.getElementById('namajContainer');
+        if (!container) return;
+
+        const waqts = [
+            { id: 'fajr', label: 'Fajr (ফজর)' },
+            { id: 'dhuhr', label: 'Dhuhr (জোহর)' },
+            { id: 'asr', label: 'Asr (আসর)' },
+            { id: 'maghrib', label: 'Maghrib (মাগরিব)' },
+            { id: 'isha', label: 'Isha (এশা)' }
+        ];
+
+        const hideDone = !this.state.settings.showCompletedItems;
+
+        container.innerHTML = waqts.map(w => {
+            const isDone = this.state.namaj[w.id] === true;
+            const isMissed = this.state.namaj[w.id] === 'missed';
+
+            if (isDone && hideDone) return '';
+
+            return `
+                <div class="namaj-item ${isDone ? 'completed' : ''} ${isMissed ? 'missed' : ''}" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:${isMissed ? '#fef2f2' : (isDone ? '#f0fdf4' : 'white')}; border:1px solid ${isMissed ? '#fca5a5' : (isDone ? '#86efac' : 'var(--kiwi-200)')}; border-radius:12px; margin-bottom:8px;">
+                    <span style="font-weight:700; font-size:0.92rem; color:${isMissed ? '#991b1b' : (isDone ? '#166534' : 'var(--text-main)')};">
+                        🕌 ${w.label} ${isMissed ? '(Missed / Kaza)' : ''}
+                    </span>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-icon-pill" style="background:${isDone ? '#22c55e' : '#ecfccb'}; color:${isDone ? 'white' : '#3f6212'}; border:none; padding:4px 10px; font-size:0.78rem;" onclick="app.toggleNamaj('${w.id}')">
+                            ${isDone ? '✓ Completed' : '✓ Done'}
+                        </button>
+                        <button class="btn-icon-pill" style="background:${isMissed ? '#ef4444' : '#fee2e2'}; color:${isMissed ? 'white' : '#991b1b'}; border:none; padding:4px 10px; font-size:0.78rem;" onclick="app.markNamajMissed('${w.id}')">
+                            ${isMissed ? '❌ Marked Missed' : '❌ Missed'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
     // 🏆 Overall 100-Day Transformation Analytics Dashboard Card
     renderOverallTransformationWidget() {
         const container = document.getElementById('overallTransformationContainer');
@@ -1590,7 +1629,19 @@ class SkyRoutineApp {
         }
     }
 
+    openAppGuideModal() {
+        window.cuteAudio.playPop();
+        const modal = document.getElementById('appGuideModalOverlay');
+        if (modal) modal.classList.add('active');
+    }
+
+    closeAppGuideModal() {
+        const modal = document.getElementById('appGuideModalOverlay');
+        if (modal) modal.classList.remove('active');
+    }
+
     // 📊 Master 100-Day Progress & Habit Analytics Report Generator
+
     openMasterProgressReportModal() {
         window.cuteAudio.playFanfare();
         this.triggerConfetti();
