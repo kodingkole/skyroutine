@@ -37,12 +37,16 @@
                 <span class="badge-tag" style="background:var(--kiwi-100); color:var(--kiwi-800); font-size:0.75rem;">Kiwi Edition</span>
             </div>
             <div class="nav-controls">
+                <button class="btn-icon-pill" style="background:linear-gradient(135deg, #0ea5e9, #0284c7); color:white; font-weight:800;" onclick="app.openMasterProgressReportModal()">
+                    <span>📊</span> View Full Progress Report
+                </button>
                 <button class="btn-icon-pill" style="background:linear-gradient(135deg, #a3e635, #65a30d); color:white; font-weight:800;" onclick="app.promptInstallApp()">
                     <span>📲</span> Install App
                 </button>
                 <button class="btn-icon-pill" style="background:linear-gradient(135deg, #84cc16, #65a30d); color:white;" onclick="app.openFutureSimulator()">
                     <span>🔮</span> Quantum Future Simulator
                 </button>
+
                 <button class="btn-icon-pill" onclick="app.toggleHologramMode()">
                     <span>⚡</span> 2060 Hologram Mode
                 </button>
@@ -408,7 +412,25 @@
         <div class="kodingkole-text">kodingkole</div>
     </div>
 
-    <!-- 🎂 12 September Birthday Celebration Modal Overlay -->
+    <!-- 📊 Master 100-Day Transformation & Habit Report Modal -->
+    <div class="modal-overlay" id="masterReportModalOverlay">
+        <div class="modal-box" style="max-width:620px;">
+            <div class="modal-header">
+                <div class="modal-icon">📊</div>
+                <h2 class="modal-title" style="color:var(--kiwi-800);">100-Day Transformation Progress Report</h2>
+                <p style="font-size:0.88rem; color:var(--text-muted);">Overall Habit Controls, Weight Drop & Routine Summary</p>
+            </div>
+
+            <div class="modal-body" id="masterReportBody">
+                <!-- Rendered dynamically via JS -->
+            </div>
+
+            <button class="btn-primary-block" onclick="app.closeMasterProgressReportModal()">
+                Close Report & Keep Progressing 🚀
+            </button>
+        </div>
+    </div>
+
     <div class="modal-overlay birthday-modal-overlay" id="birthdayModalOverlay">
         <div class="birthday-card" style="max-width:520px; position:relative;">
             <div style="font-size:3.5rem; margin-bottom:10px; animation:kiwiFloating 2s infinite;">🎂👑🎉</div>

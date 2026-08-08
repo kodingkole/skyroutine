@@ -57,11 +57,17 @@ class SkyRoutineApp {
                 roomGhuchano: false,
                 dinnerSkipped: false,
                 noTea: true,
+                noMilkTea: true,
+                noFastFood: true,
+                noCoke: true,
+                noMilkshake: true,
+                noHeavyRice3Times: true,
                 noChocolate: true,
                 noOvereating: true,
                 waterLitersLogged: 0,
                 fuskaCountThisWeek: 0
             },
+
             techLearning: {
                 html: false,
                 css: false,
@@ -1418,6 +1424,84 @@ class SkyRoutineApp {
         }
     }
 
+    // 📊 Master 100-Day Progress & Habit Analytics Report Generator
+    openMasterProgressReportModal() {
+        window.cuteAudio.playFanfare();
+        this.triggerConfetti();
+
+        const cl = this.state.checklist;
+        const startW = this.state.goals.startWeightKg || 66.0;
+        const currentW = this.state.goals.currentWeightKg || 66.0;
+        const lostW = Math.max(0, (startW - currentW)).toFixed(1);
+        const remW = Math.max(0, (currentW - 50.0)).toFixed(1);
+
+        const currentDay = this.state.challenge.currentDay || 1;
+        const fastsWeek = this.state.fasting.fastsCountThisWeek || 0;
+
+        const body = document.getElementById('masterReportBody');
+        if (body) {
+            body.innerHTML = `
+                <div style="background:linear-gradient(135deg, #ffffff 0%, #f7fee7 100%); border:2px solid var(--kiwi-300); border-radius:18px; padding:22px; text-align:left;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                        <h3 style="font-family:'Outfit', sans-serif; font-weight:800; font-size:1.3rem; color:var(--kiwi-800);">
+                            📊 Master Transformation & Habit Analytics Report
+                        </h3>
+                        <span class="badge-tag" style="background:#84cc16; color:#0f172a; font-weight:800;">Day ${currentDay} of 100</span>
+                    </div>
+
+                    <!-- 1. Weight Loss Trajectory Section -->
+                    <div style="background:white; border:1px solid var(--kiwi-200); border-radius:14px; padding:14px; margin-bottom:14px;">
+                        <div style="font-weight:800; font-size:0.95rem; color:var(--kiwi-800); margin-bottom:6px;">⚖️ Weight Journey to 50kg Summary:</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; text-align:center;">
+                            <div style="background:var(--kiwi-50); padding:10px; border-radius:10px;">
+                                <div style="font-weight:800; font-size:1.2rem; color:var(--kiwi-800);">${startW} kg</div>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">Start Weight</div>
+                            </div>
+                            <div style="background:#ecfccb; padding:10px; border-radius:10px;">
+                                <div style="font-weight:800; font-size:1.2rem; color:#4d7c0f;">-${lostW} kg</div>
+                                <div style="font-size:0.75rem; color:#3f6212;">Total Lost 🎉</div>
+                            </div>
+                            <div style="background:#fefce8; padding:10px; border-radius:10px;">
+                                <div style="font-weight:800; font-size:1.2rem; color:#854d0e;">${remW} kg</div>
+                                <div style="font-size:0.75rem; color:#713f12;">To Reach 50kg</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Bad Habit Discipline Section -->
+                    <div style="background:white; border:1px solid var(--kiwi-200); border-radius:14px; padding:14px; margin-bottom:14px;">
+                        <div style="font-weight:800; font-size:0.95rem; color:var(--kiwi-800); margin-bottom:8px;">🥗 Food & Drink Discipline Status:</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.88rem; font-weight:700;">
+                            <div style="color:${cl.noMilkTea ? '#65a30d' : '#e11d48'};">☕ Milk Tea: ${cl.noMilkTea ? '✓ Controlled / Avoided' : '❌ Consumed'}</div>
+                            <div style="color:${cl.noFastFood ? '#65a30d' : '#e11d48'};">🍔 Fast Food: ${cl.noFastFood ? '✓ Controlled / Avoided' : '❌ Consumed'}</div>
+                            <div style="color:${cl.noCoke ? '#65a30d' : '#e11d48'};">🥤 Coke & Drinks: ${cl.noCoke ? '✓ Controlled / Avoided' : '❌ Consumed'}</div>
+                            <div style="color:${cl.noMilkshake ? '#65a30d' : '#e11d48'};">🥤 Milkshake: ${cl.noMilkshake ? '✓ Controlled / Avoided' : '❌ Consumed'}</div>
+                            <div style="color:${cl.noHeavyRice3Times ? '#65a30d' : '#e11d48'};">🍚 Rice Intake: ${cl.noHeavyRice3Times ? '✓ Controlled (No 3-Bela Bhaat)' : '❌ Heavy 3-Bela'}</div>
+                            <div style="color:#65a30d;">🍢 Fuska: Max 1/Week Limit Kept</div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Intermittent Fasting & Hydration Section -->
+                    <div style="background:white; border:1px solid var(--kiwi-200); border-radius:14px; padding:14px;">
+                        <div style="font-weight:800; font-size:0.95rem; color:var(--kiwi-800); margin-bottom:6px;">💧 Intermittent Fasting & Glowy Hydration:</div>
+                        <div style="font-size:0.9rem; font-weight:700; color:var(--text-main);">
+                            🥗 Fasting Completed: <strong>${fastsWeek} Times This Week</strong><br/>
+                            💧 Water Logged Today: <strong>${cl.waterLitersLogged || 0} / 3.0 Liters</strong>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const modal = document.getElementById('masterReportModalOverlay');
+        if (modal) modal.classList.add('active');
+    }
+
+    closeMasterProgressReportModal() {
+        const modal = document.getElementById('masterReportModalOverlay');
+        if (modal) modal.classList.remove('active');
+    }
+
     resetWeightHistory() {
         window.cuteAudio.playPop();
         this.state.goals.startWeightKg = 66.0;
@@ -1429,6 +1513,7 @@ class SkyRoutineApp {
         this.renderGoalsWidget();
         this.showMascotDialogue("Weight data reset strictly to 66.0 kg! Zero dummy data! ⚖️✨");
     }
+
 
     submitWeight() {
         const startVal = parseFloat(document.getElementById('startWeightInput')?.value || 66.0);
