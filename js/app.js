@@ -372,20 +372,49 @@ class SkyRoutineApp {
     // 📢 Cute Scolding Engine ("Boka Dibe")
     triggerCuteScolding() {
         window.cuteAudio.playWarning();
-        const mascot = document.querySelector('.magical-kiwi-cat');
-        if (mascot) {
-            mascot.style.transform = 'rotate(-18deg) scale(1.15)';
-            setTimeout(() => mascot.style.transform = 'none', 500);
+
+        // 😾 Make Kiki visually angry!
+        const catBody = document.getElementById('kiwiCatBody');
+        const catContainer = document.getElementById('mascotCatContainer');
+        const bubble = document.getElementById('mascotSpeechBubble');
+
+        if (catContainer) {
+            catContainer.style.transform = 'scale(1.2) rotate(-15deg)';
+            catContainer.style.filter = 'drop-shadow(0 0 20px rgba(244, 63, 94, 0.7))';
+        }
+        if (catBody) {
+            catBody.style.background = 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'; // Angry Red Glow!
+        }
+        if (bubble) {
+            bubble.style.background = 'linear-gradient(135deg, #ffe4e6, #fecdd3)';
+            bubble.style.color = '#881337';
+            bubble.style.borderColor = '#f43f5e';
         }
 
         const scolds = [
             "Ei! Fajr/Namaj porecho? Water 3L kheyecho? 😾 Ajke skin glow na korle amar boka khabe! Taratari finish koro!",
-            "Khabar skip kora jabe na, kintu dudh cha & fast food agid koro! 😾 Fasting & coding focus thik rakho!",
+            "Khabar skip kora jabe na, kintu dudh cha & fast food avoid koro! 😾 Fasting & coding focus thik rakho!",
             "Chul achrano hoise? Room ghuchano hoise? 😾 Amon alsemi korle 50kg weight hobe kivabe! Utho, utho!",
             "Coding timer chalu koro! Html, CSS, Laravel sikhba na? 😾 Kiki sob dekhche, dustami bondho!"
         ];
         const rand = scolds[Math.floor(Math.random() * scolds.length)];
         this.showMascotDialogue(rand);
+
+        // Reset Angry state after 4 seconds
+        setTimeout(() => {
+            if (catContainer) {
+                catContainer.style.transform = 'none';
+                catContainer.style.filter = 'none';
+            }
+            if (catBody) {
+                catBody.style.background = 'linear-gradient(135deg, #a3e635 0%, #65a30d 100%)';
+            }
+            if (bubble) {
+                bubble.style.background = '#ffffff';
+                bubble.style.color = '#1e293b';
+                bubble.style.borderColor = 'var(--kiwi-300)';
+            }
+        }, 4000);
     }
 
     // 🐱 Interactive Pet Kiki Cat Creature with Flower 🌸 & Chocolate 🍫 Gift Animation
@@ -393,8 +422,21 @@ class SkyRoutineApp {
         window.cuteAudio.playChime();
         this.triggerConfetti();
 
+        const catContainer = document.getElementById('mascotCatContainer');
+        const bubble = document.getElementById('mascotSpeechBubble');
+
+        if (catContainer) {
+            catContainer.style.transform = 'scale(1.25) rotate(10deg)';
+            catContainer.style.filter = 'drop-shadow(0 0 20px rgba(244, 114, 182, 0.7))';
+        }
+        if (bubble) {
+            bubble.style.background = 'linear-gradient(135deg, #fce7f3, #fbcfe8)';
+            bubble.style.color = '#831843';
+            bubble.style.borderColor = '#f472b6';
+        }
+
         // Spawn floating Flower 🌸 & Chocolate 🍫 Gifts
-        const petEl = document.querySelector('.magical-kiwi-cat');
+        const petEl = document.getElementById('mascotCatContainer') || document.querySelector('.magical-kiwi-cat');
         const rect = petEl ? petEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 2 };
 
         const gifts = ['🌸', '🍫', '💖', '🌺', '🍫'];
@@ -403,17 +445,12 @@ class SkyRoutineApp {
                 const giftEl = document.createElement('div');
                 giftEl.className = 'floating-pet-gift';
                 giftEl.innerText = item;
-                giftEl.style.left = `${rect.left + 20 + (i * 18)}px`;
+                giftEl.style.left = `${rect.left + 15 + (i * 20)}px`;
                 giftEl.style.top = `${rect.top - 10}px`;
                 document.body.appendChild(giftEl);
                 setTimeout(() => giftEl.remove(), 1600);
-            }, i * 150);
+            }, i * 140);
         });
-
-        if (petEl) {
-            petEl.style.transform = 'scale(1.25) rotate(10deg)';
-            setTimeout(() => petEl.style.transform = 'none', 450);
-        }
 
         const dialogues = [
             "Awww! Thank you so much for the beautiful flower 🌸 and chocolate 🍫! I love you so much! 🐱💖",
@@ -422,7 +459,20 @@ class SkyRoutineApp {
         ];
         const rand = dialogues[Math.floor(Math.random() * dialogues.length)];
         this.showMascotDialogue(rand);
+
+        setTimeout(() => {
+            if (catContainer) {
+                catContainer.style.transform = 'none';
+                catContainer.style.filter = 'none';
+            }
+            if (bubble) {
+                bubble.style.background = '#ffffff';
+                bubble.style.color = '#1e293b';
+                bubble.style.borderColor = 'var(--kiwi-300)';
+            }
+        }, 4000);
     }
+
 
     // 👗 Dynamic Outfit & Getup Engine (Weather, Mood & Time based!)
     updateKikiOutfit() {

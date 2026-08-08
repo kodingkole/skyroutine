@@ -354,20 +354,16 @@
                         </svg>
                     </div>
 
-                    <div class="mascot-name">Kiki 🥝🐾</div>
-                    <div class="mascot-status-badge">Kiwi Magic Transformation Guide</div>
-
-                    <button class="btn-mascot-talk" onclick="app.triggerMascotRandomTalk()">
         <!-- Mascot & Companion Floating Dock -->
-        <div class="mascot-panel">
+        <div class="mascot-panel" id="mainMascotPanel">
             <!-- 🐱 Real Animated Magical Kiwi Cat Creature -->
-            <div class="magical-kiwi-container" onclick="app.petKikiCat()" title="Click to pet Kiki the Kiwi Cat!">
-                <div class="magical-kiwi-cat">
+            <div class="magical-kiwi-container" id="mascotCatContainer" onclick="app.petKikiCat()" title="Click to pet Kiki the Kiwi Cat!">
+                <div class="magical-kiwi-cat" id="mascotCatElement">
                     <div class="kiki-accessory-container"></div>
-                    <div class="kiwi-cat-body">
+                    <div class="kiwi-cat-body" id="kiwiCatBody">
                         <div class="kiwi-ear left"></div>
                         <div class="kiwi-ear right"></div>
-                        <div class="kiwi-eyes">
+                        <div class="kiwi-eyes" id="kiwiCatEyes">
                             <div class="kiwi-eye"></div>
                             <div class="kiwi-eye"></div>
                         </div>
@@ -379,21 +375,19 @@
                 <div class="kiwi-sparkle" style="bottom:10px; left:-5px;">💖</div>
             </div>
 
-
-            <div class="mascot-info">
-                <div class="mascot-header">
-                    <h3 class="mascot-name">Kiki the Kiwi Cat 🐾</h3>
-                    <span class="mascot-status-dot"></span>
+            <div class="mascot-info" style="text-align:center;">
+                <div class="mascot-header" style="justify-content:center;">
+                    <h3 class="mascot-name" style="font-size:1.15rem; color:var(--kiwi-800);">Kiki the Kiwi Cat 🐾</h3>
                 </div>
-                <div class="mascot-speech-bubble" id="mascotSpeechBubble">
-                    Meow! Day 1 starts 9th August! Click me to pet me & get motivation! 🌸✨
+                <div class="mascot-speech-bubble" id="mascotSpeechBubble" style="background:#ffffff; color:#1e293b; border:1.5px solid var(--kiwi-300); font-weight:700; font-size:0.9rem; padding:10px 14px; border-radius:14px; margin:10px 0; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+                    Meow! Day 1 starts 9th August! Click me or pet me for motivation! 🌸✨
                 </div>
-                <div style="display:flex; gap:8px; margin-top:8px;">
-                    <button class="btn-icon-pill" style="font-size:0.75rem; padding:4px 10px;" onclick="app.triggerCuteScolding()">
-                        📢 Get Scolded ("Boka Dibes")
+                <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
+                    <button class="btn-icon-pill" style="background:#ffe4e6; color:#9f1239; border:1px solid #f43f5e; font-weight:800; font-size:0.8rem; padding:6px 12px;" onclick="app.triggerCuteScolding()">
+                        📢 Get Scolded ("Boka Dibe")
                     </button>
-                    <button class="btn-icon-pill" style="font-size:0.75rem; padding:4px 10px;" onclick="app.petKikiCat()">
-                        🐾 Pet Kiki
+                    <button class="btn-icon-pill" style="background:#ecfccb; color:#3f6212; border:1px solid #84cc16; font-weight:800; font-size:0.8rem; padding:6px 12px;" onclick="app.petKikiCat()">
+                        🌸 Give Flower & 🍫 Pet Kiki
                     </button>
                 </div>
             </div>
