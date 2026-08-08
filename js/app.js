@@ -406,53 +406,73 @@ class SkyRoutineApp {
         if (modal) modal.classList.remove('active');
     }
 
-    // 📢 Cute Scolding Engine ("Boka Dibe")
+    // 💬 Loving Gentle Reminder Engine
     triggerCuteScolding() {
-        window.cuteAudio.playWarning();
+        window.cuteAudio.playChime();
 
-        // 😾 Make Kiki visually angry!
-        const catBody = document.getElementById('kiwiCatBody');
         const catContainer = document.getElementById('mascotCatContainer');
         const bubble = document.getElementById('mascotSpeechBubble');
 
         if (catContainer) {
-            catContainer.style.transform = 'scale(1.2) rotate(-15deg)';
-            catContainer.style.filter = 'drop-shadow(0 0 20px rgba(244, 63, 94, 0.7))';
-        }
-        if (catBody) {
-            catBody.style.background = 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)'; // Angry Red Glow!
+            catContainer.style.transform = 'scale(1.15) rotate(-6deg)';
         }
         if (bubble) {
-            bubble.style.background = 'linear-gradient(135deg, #ffe4e6, #fecdd3)';
-            bubble.style.color = '#881337';
-            bubble.style.borderColor = '#f43f5e';
+            bubble.style.background = '#fef9c3';
+            bubble.style.color = '#713f12';
+            bubble.style.borderColor = '#fde047';
         }
 
-        const scolds = [
-            "Ei! Fajr/Namaj porecho? Water 3L kheyecho? 😾 Ajke skin glow na korle amar boka khabe! Taratari finish koro!",
-            "Khabar skip kora jabe na, kintu dudh cha & fast food avoid koro! 😾 Fasting & coding focus thik rakho!",
-            "Chul achrano hoise? Room ghuchano hoise? 😾 Amon alsemi korle 50kg weight hobe kivabe! Utho, utho!",
-            "Coding timer chalu koro! Html, CSS, Laravel sikhba na? 😾 Kiki sob dekhche, dustami bondho!"
+        const reminders = [
+            "Hey sweetheart! Reminding you gently: Have you completed your Namaj & drunk 3L water today? You've got this! 🌸✨",
+            "A friendly Kiwi reminder! Stay away from milk tea & fast food today for that glowing flawless skin! 🥝💖",
+            "You are doing amazing! Take a 5-minute break, comb your hair, and keep shining on your 50kg journey! 🌟",
+            "Time to practice coding! HTML, CSS & Laravel are waiting for your brilliant mind! 💻✨"
         ];
-        const rand = scolds[Math.floor(Math.random() * scolds.length)];
+        const rand = reminders[Math.floor(Math.random() * reminders.length)];
         this.showMascotDialogue(rand);
 
-        // Reset Angry state after 4 seconds
         setTimeout(() => {
-            if (catContainer) {
-                catContainer.style.transform = 'none';
-                catContainer.style.filter = 'none';
-            }
-            if (catBody) {
-                catBody.style.background = 'linear-gradient(135deg, #a3e635 0%, #65a30d 100%)';
-            }
+            if (catContainer) catContainer.style.transform = 'none';
             if (bubble) {
                 bubble.style.background = '#ffffff';
                 bubble.style.color = '#1e293b';
                 bubble.style.borderColor = 'var(--kiwi-300)';
             }
-        }, 4000);
+        }, 4500);
     }
+
+    // 🤖 Automatic Mascot Guidance Engine
+    autoUpdateMascotMood() {
+        const namajDone = Object.values(this.state.namaj).filter(Boolean).length;
+        const waterL = this.state.checklist.waterLitersLogged || 0;
+        const noTea = this.state.checklist.noMilkTea;
+
+        const isFullyDone = namajDone === 5 && waterL >= 3.0 && noTea;
+
+        const catBody = document.getElementById('kiwiCatBody');
+        const catContainer = document.getElementById('mascotCatContainer');
+        const bubble = document.getElementById('mascotSpeechBubble');
+
+        if (!isFullyDone) {
+            if (catBody) catBody.style.background = 'linear-gradient(135deg, #a3e635 0%, #65a30d 100%)';
+            if (catContainer) catContainer.style.filter = 'drop-shadow(0 0 16px rgba(132, 204, 22, 0.4))';
+            if (bubble) {
+                bubble.style.background = '#ffffff';
+                bubble.style.color = '#1e293b';
+                bubble.style.borderColor = 'var(--kiwi-300)';
+            }
+        } else {
+            if (catBody) catBody.style.background = 'linear-gradient(135deg, #a3e635 0%, #65a30d 100%)';
+            if (catContainer) catContainer.style.filter = 'drop-shadow(0 0 20px rgba(244, 114, 182, 0.6))';
+            if (bubble) {
+                bubble.style.background = '#f0fdf4';
+                bubble.style.color = '#14532d';
+                bubble.style.borderColor = '#84cc16';
+                bubble.innerText = "YAY! Super proud of you! Daily tasks completed! Glowy skin & 50kg goal ongoing! 🌸✨";
+            }
+        }
+    }
+
 
     // 🐱 Interactive Pet Kiki Cat Creature with Flower 🌸 & Chocolate 🍫 Gift Animation
     petKikiCat() {
