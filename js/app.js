@@ -224,6 +224,7 @@ class SkyRoutineApp {
 
     renderAll() {
         this.renderChallengeBanner();
+        this.renderOverallTransformationWidget();
         this.renderNamajWidget();
         this.renderTimersWidget();
         this.renderChecklistWidget();
@@ -237,7 +238,105 @@ class SkyRoutineApp {
         this.renderDonutChart();
         this.renderWallpaperState();
         this.checkMyBirthday();
+        this.startKikiFreeWalk();
     }
+
+    // 🐾 Free-Walking Kiki Pet Engine (Walks around full screen!)
+    startKikiFreeWalk() {
+        if (this.kikiWalkTimer) return;
+
+        this.kikiWalkTimer = setInterval(() => {
+            const pet = document.getElementById('freeWalkingKikiPet');
+            if (!pet) return;
+
+            const maxX = window.innerWidth - 140;
+            const maxY = window.innerHeight - 180;
+
+            const randX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randY = Math.max(100, Math.floor(Math.random() * maxY));
+
+            // Create sparkle trail at old position
+            const trail = document.createElement('div');
+            trail.className = 'kiki-sparkle-trail';
+            trail.innerHTML = '✨🐾';
+            trail.style.left = pet.style.left || '40px';
+            trail.style.top = pet.style.top || '80%';
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), 1200);
+
+            pet.style.left = `${randX}px`;
+            pet.style.top = `${randY}px`;
+        }, 14000);
+    }
+
+    // 🏆 Overall 100-Day Transformation Analytics Dashboard Card
+    renderOverallTransformationWidget() {
+        const container = document.getElementById('overallTransformationContainer');
+        if (!container) return;
+
+        const currentDay = this.state.challenge.currentDay || 1;
+        const dayProgress = Math.round((currentDay / 100) * 100);
+
+        const startW = this.state.goals.startWeightKg || 66.0;
+        const currentW = this.state.goals.currentWeightKg || 66.0;
+        const targetW = 50.0;
+        const lostW = Math.max(0, (startW - currentW));
+        const totalToLose = Math.max(0.1, (startW - targetW));
+        const weightProgress = Math.min(100, Math.round((lostW / totalToLose) * 100));
+
+        const namajDone = Object.values(this.state.namaj).filter(Boolean).length;
+        const dailyRoutineProgress = Math.round((namajDone / 5) * 100);
+
+        // Overall Master Score Combining All Pillars
+        const overallScore = Math.min(100, Math.round(
+            (dayProgress * 0.2) + (weightProgress * 0.4) + (dailyRoutineProgress * 0.4)
+        ));
+
+        // Dynamically Update Confidence Score based on real progress!
+        this.state.goals.confidenceScore = Math.min(100, 70 + Math.round(overallScore * 0.3));
+
+        container.innerHTML = `
+            <div class="overall-transform-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                    <div>
+                        <div style="font-size:0.82rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#a3e635;">
+                            🏆 Overall 100-Day Life & Weight Transformation Dashboard
+                        </div>
+                        <div style="font-size:1.2rem; font-weight:800; margin-top:4px; color:white;">
+                            Cumulative Overall Transformation Score
+                        </div>
+                        <div style="font-size:0.85rem; color:#94a3b8; margin-top:4px;">
+                            Tracks overall 100-day journey, weight loss to 50kg, and daily routine consistency!
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:14px;">
+                        <div class="overall-score-badge">${overallScore}%</div>
+                        <span class="badge-tag" style="background:#84cc16; color:#0f172a; font-weight:800; font-size:0.85rem;">OVERALL MASTERY</span>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-top:20px;">
+                    <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:12px; text-align:center;">
+                        <div style="font-size:1.4rem; font-weight:800; color:#a3e635;">${currentDay} / 100</div>
+                        <div style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Challenge Days</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:12px; text-align:center;">
+                        <div style="font-size:1.4rem; font-weight:800; color:#38bdf8;">${weightProgress}%</div>
+                        <div style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Weight Goal (50kg)</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:12px; text-align:center;">
+                        <div style="font-size:1.4rem; font-weight:800; color:#f472b6;">${this.state.goals.confidenceScore}%</div>
+                        <div style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Self-Confidence</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:12px; text-align:center;">
+                        <div style="font-size:1.4rem; font-weight:800; color:#fbbf24;">${this.state.fasting.fastsCountThisWeek || 0}</div>
+                        <div style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Fasts Completed</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
 
     // 🎂 12 September Birthday Check & Spectacular Animation Modal
     checkMyBirthday() {

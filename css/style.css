@@ -1221,11 +1221,59 @@ body.hologram-mode .progress-fill {
     100% { transform: scale(1.3) translateY(-10px); opacity: 1; }
 }
 
-/* 🎂 Birthday Celebration Modal Overlay */
-.birthday-modal-overlay {
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(20px);
+/* ==========================================================================
+   🐾 Free-Walking Floating Kiki Cat Pet & Overall Transformation Dashboard
+   ========================================================================== */
+
+/* Free-Walking Floating Kiki Companion */
+.walking-kiki-pet {
+    position: fixed;
+    bottom: 80px;
+    left: 40px;
+    z-index: 9999;
+    cursor: pointer;
+    transition: left 2.5s ease-in-out, top 2.5s ease-in-out, transform 0.4s ease;
+    filter: drop-shadow(0 10px 20px rgba(101, 163, 13, 0.4));
 }
+
+.walking-kiki-pet:hover {
+    transform: scale(1.15);
+}
+
+.kiki-sparkle-trail {
+    position: fixed;
+    pointer-events: none;
+    font-size: 0.9rem;
+    z-index: 9998;
+    animation: trailFade 1.2s ease-out forwards;
+}
+
+@keyframes trailFade {
+    0% { opacity: 1; transform: scale(1) translateY(0); }
+    100% { opacity: 0; transform: scale(0.4) translateY(-20px); }
+}
+
+/* 🏆 Overall 100-Day Transformation Dashboard Card */
+.overall-transform-card {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #84cc16;
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    color: white;
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.4);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.overall-score-badge {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #a3e635;
+    text-shadow: 0 0 20px rgba(163, 230, 53, 0.6);
+}
+
 
 .birthday-card {
     background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 50%, #f0fdf4 100%);
