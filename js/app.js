@@ -14,13 +14,11 @@ class SkyRoutineApp {
                 startDate: new Date().toISOString().split('T')[0]
             },
             goals: {
-                startWeightKg: 58.0,
+                startWeightKg: 66.0,
                 targetWeightKg: 50.0,
-                currentWeightKg: 54.0,
+                currentWeightKg: 66.0,
                 weightHistory: [
-                    { date: '2026-08-01', weight: 58.0 },
-                    { date: '2026-08-05', weight: 56.0 },
-                    { date: '2026-08-08', weight: 54.0 }
+                    { date: '2026-08-08', weight: 66.0 }
                 ],
                 jobApplicationsCount: 0,
                 contentIdeasCount: 0,
@@ -602,7 +600,7 @@ class SkyRoutineApp {
         this.renderDonutChart();
     }
 
-    // 🥗 Intermittent Fasting Tracker (12hr / 16hr)
+    // 🥗 Intermittent Fasting Tracker (12hr / 16hr) with Weekly Fasting Counter
     renderFastingWidget() {
         const container = document.getElementById('fastingContainer');
         if (!container) return;
@@ -613,13 +611,17 @@ class SkyRoutineApp {
         const isRunning = this.state.fasting.running;
         const isDone = this.state.fasting.done || elapsedSec >= targetSec;
         const percent = Math.min(100, Math.round((elapsedSec / targetSec) * 100));
+        const weeklyFasts = this.state.fasting.fastsCountThisWeek || 0;
 
         container.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                 <div style="font-weight:700; font-size:1rem; color:var(--text-main)">Fasting Mode Target:</div>
-                <div style="display:flex; gap:8px;">
+                <div style="display:flex; gap:8px; align-items:center;">
                     <button class="tab-btn ${targetH === 12 ? 'active' : ''}" onclick="app.setFastingTarget(12)">12 Hr Fast</button>
                     <button class="tab-btn ${targetH === 16 ? 'active' : ''}" onclick="app.setFastingTarget(16)">16 Hr Fast</button>
+                    <span class="badge-tag" style="background:#ecfccb; color:#3f6212; font-weight:800;">
+                        🥗 Fasted ${weeklyFasts} Times This Week
+                    </span>
                 </div>
             </div>
 
@@ -968,23 +970,26 @@ class SkyRoutineApp {
         }
     }
 
-    // 🎯 Personal Transformation Targets & Weight Loss Analytics
+    // 🎯 Personal Transformation Targets & 66kg Weight Loss Journey Analytics
     renderGoalsWidget() {
         const container = document.getElementById('goalsContainer');
         if (!container) return;
 
-        const startW = this.state.goals.startWeightKg || 58.0;
+        const startW = this.state.goals.startWeightKg || 66.0;
         const targetW = this.state.goals.targetWeightKg || 50.0;
-        const currentW = this.state.goals.currentWeightKg || 54.0;
+        const currentW = this.state.goals.currentWeightKg || 66.0;
         const history = this.state.goals.weightHistory || [];
 
+        const totalToLose = Math.max(0.1, (startW - targetW)).toFixed(1);
         const weightLost = Math.max(0, (startW - currentW)).toFixed(1);
         const weightRemaining = Math.max(0, (currentW - targetW)).toFixed(1);
+        const journeyPercent = Math.min(100, Math.max(0, Math.round((weightLost / totalToLose) * 100)));
+
         const ideas = this.state.goals.contentIdeasCount;
         const conf = this.state.goals.confidenceScore;
 
         container.innerHTML = `
-            <!-- Weight Loss Journey Summary Pill Cards -->
+            <!-- 66kg Weight Loss Journey Summary Pill Cards -->
             <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">
                 <div style="background:var(--kiwi-50); border:1.5px solid var(--kiwi-200); border-radius:16px; padding:14px; text-align:center;">
                     <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:800; color:var(--kiwi-800);">${startW} kg</div>
@@ -1000,10 +1005,21 @@ class SkyRoutineApp {
                 </div>
             </div>
 
+            <!-- Weight Journey Progress Bar -->
+            <div style="background:var(--kiwi-50); border:1.5px solid var(--kiwi-200); border-radius:16px; padding:16px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.92rem; color:var(--kiwi-800); margin-bottom:8px;">
+                    <span>Weight Journey to 50kg Progress:</span>
+                    <span>${journeyPercent}% Achieved</span>
+                </div>
+                <div class="progress-track" style="height:14px; background:var(--kiwi-200);">
+                    <div class="progress-fill" style="width: ${journeyPercent}%; background: linear-gradient(90deg, #84cc16, #65a30d);"></div>
+                </div>
+            </div>
+
             <!-- Weight Log Input -->
             <div class="goal-item">
                 <div class="goal-header">
-                    <div class="goal-title">⚖️ Weight Loss Journey (Target: 50.0 kg)</div>
+                    <div class="goal-title">⚖️ Weight Loss Tracker (Target: 50.0 kg)</div>
                     <div class="goal-val">${currentW} kg / 50.0 kg</div>
                 </div>
 
@@ -1021,7 +1037,7 @@ class SkyRoutineApp {
 
                 <!-- Weight Progress Canvas Chart -->
                 <div style="margin-top:20px;">
-                    <div style="font-weight:700; font-size:0.9rem; color:var(--kiwi-800); margin-bottom:8px;">📈 Weight Loss Progress Chart</div>
+                    <div style="font-weight:700; font-size:0.9rem; color:var(--kiwi-800); margin-bottom:8px;">📈 Weight Loss Progress Curve (66kg ➔ 50kg)</div>
                     <div style="background:white; border:1.5px solid var(--kiwi-100); border-radius:14px; padding:12px;">
                         <canvas id="weightChartCanvas" width="500" height="180" style="width:100%; height:180px;"></canvas>
                     </div>
@@ -1072,7 +1088,8 @@ class SkyRoutineApp {
         const graphHeight = height - (padding * 2);
 
         const weights = history.map(h => h.weight);
-        weights.push(50.0); // Include target 50kg line
+        weights.push(66.0);
+        weights.push(50.0); // Target line
 
         const maxW = Math.max(...weights) + 2;
         const minW = Math.min(...weights) - 2;
@@ -1093,13 +1110,14 @@ class SkyRoutineApp {
         ctx.fillText('Target 50kg', width - padding - 65, targetY - 6);
 
         // Draw Weight Line Graph
-        if (history.length > 1) {
+        if (history.length > 0) {
             ctx.beginPath();
             ctx.strokeStyle = '#65a30d';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 3.5;
 
             history.forEach((h, idx) => {
-                const x = padding + (idx / (history.length - 1)) * graphWidth;
+                const divisor = history.length > 1 ? (history.length - 1) : 1;
+                const x = padding + (idx / divisor) * graphWidth;
                 const y = height - padding - (((h.weight - minW) / (maxW - minW)) * graphHeight);
 
                 if (idx === 0) ctx.moveTo(x, y);
@@ -1109,16 +1127,17 @@ class SkyRoutineApp {
 
             // Draw data points & labels
             history.forEach((h, idx) => {
-                const x = padding + (idx / (history.length - 1)) * graphWidth;
+                const divisor = history.length > 1 ? (history.length - 1) : 1;
+                const x = padding + (idx / divisor) * graphWidth;
                 const y = height - padding - (((h.weight - minW) / (maxW - minW)) * graphHeight);
 
                 ctx.fillStyle = '#4d7c0f';
                 ctx.beginPath();
-                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.arc(x, y, 6, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.fillStyle = '#1e293b';
-                ctx.font = '800 0.8rem "Outfit", sans-serif';
+                ctx.font = '800 0.82rem "Outfit", sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText(`${h.weight}kg`, x, y - 10);
             });
@@ -1126,7 +1145,7 @@ class SkyRoutineApp {
     }
 
     submitWeight() {
-        const startVal = parseFloat(document.getElementById('startWeightInput')?.value || 58.0);
+        const startVal = parseFloat(document.getElementById('startWeightInput')?.value || 66.0);
         const val = parseFloat(document.getElementById('weightInput')?.value);
         
         if (!isNaN(val) && val > 0) {
@@ -1150,6 +1169,7 @@ class SkyRoutineApp {
             this.showMascotDialogue(`Awesome! Weight logged (${val} kg)! Total ${lost} kg lost so far! Only ${remaining} kg left to reach 50kg! 🎉✨`);
         }
     }
+
 
 
     updateContentIdeas(delta) {
