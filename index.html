@@ -57,13 +57,11 @@
                 <button class="btn-icon-pill" onclick="app.toggleWallpaperMode()">
                     <span>🖥️</span> Wallpaper Mode
                 </button>
-                <button class="btn-icon-pill" onclick="app.advanceDay()">
-                    <span>⏩</span> Next Day
-                </button>
             </div>
         </nav>
 
-        <!-- 🧠 Bio-Energy & Mental Vitality HUD Card -->
+        <!-- Live Clock & Weather Bar -->
+
         <div class="bio-energy-card">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                 <div>
@@ -348,11 +346,44 @@
                     <div class="mascot-status-badge">Kiwi Magic Transformation Guide</div>
 
                     <button class="btn-mascot-talk" onclick="app.triggerMascotRandomTalk()">
-                        <span>💬</span> Talk to Kiki
+        <!-- Mascot & Companion Floating Dock -->
+        <div class="mascot-panel">
+            <!-- 🐱 Real Animated Magical Kiwi Cat Creature -->
+            <div class="magical-kiwi-container" onclick="app.petKikiCat()" title="Click to pet Kiki the Kiwi Cat!">
+                <div class="magical-kiwi-cat">
+                    <div class="kiwi-cat-body">
+                        <div class="kiwi-ear left"></div>
+                        <div class="kiwi-ear right"></div>
+                        <div class="kiwi-eyes">
+                            <div class="kiwi-eye"></div>
+                            <div class="kiwi-eye"></div>
+                        </div>
+                        <div class="kiwi-nose"></div>
+                    </div>
+                </div>
+                <div class="kiwi-sparkle" style="top:-5px; left:5px;">✨</div>
+                <div class="kiwi-sparkle" style="top:10px; right:0px;">🌟</div>
+                <div class="kiwi-sparkle" style="bottom:10px; left:-5px;">💖</div>
+            </div>
+
+            <div class="mascot-info">
+                <div class="mascot-header">
+                    <h3 class="mascot-name">Kiki the Kiwi Cat 🐾</h3>
+                    <span class="mascot-status-dot"></span>
+                </div>
+                <div class="mascot-speech-bubble" id="mascotSpeechBubble">
+                    Meow! Day 1 starts 9th August! Click me to pet me & get motivation! 🌸✨
+                </div>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <button class="btn-icon-pill" style="font-size:0.75rem; padding:4px 10px;" onclick="app.triggerCuteScolding()">
+                        📢 Get Scolded ("Boka Dibes")
                     </button>
-                    <button class="btn-mascot-talk" style="margin-top:8px; background:linear-gradient(135deg, #f43f5e 0%, #fb7185 100%); color:white;" onclick="app.scoldUserForMissingTasks()">
-                        <span>😾</span> Check & Scold Me!
+                    <button class="btn-icon-pill" style="font-size:0.75rem; padding:4px 10px;" onclick="app.petKikiCat()">
+                        🐾 Pet Kiki
                     </button>
+                </div>
+            </div>
+        </div>
                     <button class="btn-mascot-talk" style="margin-top:8px; background:var(--kiwi-100); color:var(--kiwi-800)" onclick="app.openNightReflectionModal()">
                         <span>🌙</span> Night Reflection Pop-Up
                     </button>
@@ -363,7 +394,32 @@
 
     </div>
 
-    <!-- 🔮 2060 AI Future Simulator Modal -->
+    <!-- 🏷️ Floating KodingKole Brand Badge -->
+    <div class="kodingkole-brand-badge">
+        <div class="kodingkole-logo-icon">K</div>
+        <div class="kodingkole-text">kodingkole</div>
+    </div>
+
+    <!-- 🎂 12 September Birthday Celebration Modal Overlay -->
+    <div class="modal-overlay birthday-modal-overlay" id="birthdayModalOverlay">
+        <div class="birthday-card" style="max-width:520px; position:relative;">
+            <div style="font-size:3.5rem; margin-bottom:10px; animation:kiwiFloating 2s infinite;">🎂👑🎉</div>
+            <h1 style="font-family:'Outfit', sans-serif; font-weight:800; font-size:2.2rem; color:var(--kiwi-800); margin-bottom:8px;">
+                HAPPY BIRTHDAY TO YOU! 💖✨
+            </h1>
+            <p style="font-size:1.05rem; font-weight:700; color:#db2777; margin-bottom:16px;">
+                12 September Special Celebration! 🌸
+            </p>
+            <div style="background:white; border:2px dashed #f472b6; border-radius:18px; padding:20px; text-align:left; font-size:0.95rem; line-height:1.6; color:#334155; margin-bottom:20px;">
+                🎉 May all your dreams come true! May your 100-Day Transformation bring you <strong>50kg target weight</strong>, <strong>glowy flawless skin</strong>, <strong>100% peak self-confidence</strong>, and a stellar <strong>Fullstack Developer Career</strong>! <br/><br/>
+                Kiki the Kiwi Cat & KodingKole wish you a magical year ahead! ❤️🍢🍫
+            </div>
+            <button class="btn-primary-block" style="background:linear-gradient(135deg, #ec4899, #db2777); border:none;" onclick="app.closeBirthdayModal()">
+                Thank You! Let's Celebrate 🎉✨
+            </button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="futureSimulatorModalOverlay">
         <div class="modal-box simulator-box" style="max-width:580px; text-align:center;">
             <div class="modal-header">

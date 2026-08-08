@@ -11,8 +11,9 @@ class SkyRoutineApp {
             challenge: {
                 totalDays: 100,
                 currentDay: 1,
-                startDate: new Date().toISOString().split('T')[0]
+                startDate: '2026-08-09'
             },
+
             goals: {
                 startWeightKg: 66.0,
                 targetWeightKg: 50.0,
@@ -211,6 +212,72 @@ class SkyRoutineApp {
         this.renderBirthdaysWidget();
         this.renderDonutChart();
         this.renderWallpaperState();
+        this.checkMyBirthday();
+    }
+
+    // 🎂 12 September Birthday Check & Spectacular Animation Modal
+    checkMyBirthday() {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const monthDay = todayStr.slice(5); // e.g. "09-12"
+
+        if (monthDay === '09-12') {
+            setTimeout(() => {
+                const modal = document.getElementById('birthdayModalOverlay');
+                if (modal && !modal.classList.contains('active')) {
+                    modal.classList.add('active');
+                    window.cuteAudio.playFanfare();
+                    this.triggerConfetti();
+                    this.speakVoice("Happy Birthday to you! May all your dreams, glowy skin, 50kg goal, and fullstack developer career come true! 🎉🎂✨");
+                }
+            }, 800);
+        }
+    }
+
+    closeBirthdayModal() {
+        const modal = document.getElementById('birthdayModalOverlay');
+        if (modal) modal.classList.remove('active');
+    }
+
+    // 🐱 Interactive Pet Kiki Cat Creature
+    petKikiCat() {
+        window.cuteAudio.playChime();
+        this.triggerConfetti();
+        const mascot = document.querySelector('.magical-kiwi-cat');
+        if (mascot) {
+            mascot.style.transform = 'scale(1.2) rotate(10deg)';
+            setTimeout(() => mascot.style.transform = 'none', 400);
+        }
+        const dialogues = [
+            "Purrrrr~ I love you! You are doing amazing on your 100-Day Transformation! 🐱💖",
+            "Meow! Remember to drink 3L water today & stay focused on 50kg goal! 🥝✨",
+            "You pet me! Yay! Day 1 starts 9th August! Let's conquer the world together! 🌟"
+        ];
+        const rand = dialogues[Math.floor(Math.random() * dialogues.length)];
+        this.showMascotDialogue(rand);
+    }
+
+    // 🏆 100-Day Challenge Banner (Day 1 starts 9th August 2026)
+    renderChallengeBanner() {
+        const start = new Date('2026-08-09');
+        const now = new Date();
+        const diffDays = Math.floor((now - start) / 86400000);
+        
+        let currentDay = Math.max(1, Math.min(100, diffDays + 1));
+        if (now < start) {
+            currentDay = 1; // Prior to Aug 9, Day 1 is starting tomorrow!
+        }
+        this.state.challenge.currentDay = currentDay;
+
+        const total = this.state.challenge.totalDays;
+        const remaining = total - currentDay;
+
+        const dayElem = document.getElementById('challengeCurrentDay');
+        const remElem = document.getElementById('challengeRemainingDays');
+        const progElem = document.getElementById('challengeProgressBar');
+
+        if (dayElem) dayElem.innerText = currentDay;
+        if (remElem) remElem.innerText = remaining;
+        if (progElem) progElem.style.width = `${(currentDay / total) * 100}%`;
     }
 
     // 🎁 AI Surprise Quest Engine
