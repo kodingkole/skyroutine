@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a3e635" />
+      <stop offset="100%" stop-color="#4d7c0f" />
+    </linearGradient>
+    <linearGradient id="innerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d9f99d" />
+      <stop offset="100%" stop-color="#bef264" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background App Icon Circle -->
+  <rect width="512" height="512" rx="120" fill="url(#bgGrad)" />
+
+  <!-- Cat Ears -->
+  <polygon points="120,130 170,50 210,140" fill="#3f6212" />
+  <polygon points="135,120 170,70 195,130" fill="#f472b6" />
+
+  <polygon points="392,130 342,50 302,140" fill="#3f6212" />
+  <polygon points="377,120 342,70 317,130" fill="#f472b6" />
+
+  <!-- Kiwi Slice Body -->
+  <circle cx="256" cy="280" r="170" fill="#3f6212" />
+  <circle cx="256" cy="280" r="150" fill="url(#innerGrad)" filter="url(#glow)" />
+  <circle cx="256" cy="280" r="65" fill="#ffffff" opacity="0.9" />
+
+  <!-- Seeds -->
+  <circle cx="256" cy="180" r="8" fill="#1e293b" />
+  <circle cx="326" cy="210" r="8" fill="#1e293b" />
+  <circle cx="356" cy="280" r="8" fill="#1e293b" />
+  <circle cx="326" cy="350" r="8" fill="#1e293b" />
+  <circle cx="256" cy="380" r="8" fill="#1e293b" />
+  <circle cx="186" cy="350" r="8" fill="#1e293b" />
+  <circle cx="156" cy="280" r="8" fill="#1e293b" />
+  <circle cx="186" cy="210" r="8" fill="#1e293b" />
+
+  <!-- Cute Cat Eyes -->
+  <circle cx="216" cy="265" r="14" fill="#1e293b" />
+  <circle cx="296" cy="265" r="14" fill="#1e293b" />
+  <circle cx="220" cy="260" r="5" fill="#ffffff" />
+  <circle cx="300" cy="260" r="5" fill="#ffffff" />
+
+  <!-- Cute Nose -->
+  <polygon points="256,280 250,273 262,273" fill="#f472b6" />
+
+  <!-- Magical Stars -->
+  <text x="70" y="140" font-size="42">✨</text>
+  <text x="390" y="140" font-size="42">🌟</text>
+</svg>

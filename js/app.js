@@ -126,8 +126,32 @@ class SkyRoutineApp {
             "Kiki the Kiwi Cat tomak shob shomoy cheer korbe! Tumi sotti unique & strong! 🐾❤️"
         ];
 
+        this.initPWAInstallPrompt();
         this.init();
     }
+
+    // 📲 PWA App Installation Handler
+    initPWAInstallPrompt() {
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            this.deferredInstallPrompt = e;
+        });
+    }
+
+    promptInstallApp() {
+        if (this.deferredInstallPrompt) {
+            this.deferredInstallPrompt.prompt();
+            this.deferredInstallPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    this.showMascotDialogue("Yay! SkyRoutine App installed to your PC/Phone home screen with cute Kiwi Icon! 📲🥝✨");
+                }
+                this.deferredInstallPrompt = null;
+            });
+        } else {
+            this.showMascotDialogue("To install on Chrome/Edge or Mobile: Click '⋮' or Share button in your browser & select 'Install App' or 'Add to Home Screen'! 📲🥝✨");
+        }
+    }
+
 
     loadState() {
         try {

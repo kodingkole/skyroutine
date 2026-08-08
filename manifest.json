@@ -1,0 +1,17 @@
+{
+  "name": "SkyRoutine 🥝 Sky's 100-Day Transformation App",
+  "short_name": "SkyRoutine",
+  "description": "Cute Kiwi Routine Tracker, 50kg Weight Journey, Fasting & Tech Career App",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f7fee7",
+  "theme_color": "#84cc16",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

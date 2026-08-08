@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkyRoutine 🥝🐾 | Fresh Kiwi Routine & Life Transformation</title>
+    <!-- App Icons & Manifest -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#84cc16">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <!-- Stylesheet -->
@@ -22,16 +27,19 @@
         <div class="kiwi-bubble kiwi-3"></div>
     </div>
 
-    <div class="app-container">
+    <div class="app-container" id="appContainer">
         
         <!-- Top Navigation Bar -->
         <nav class="top-nav">
             <div class="brand">
-                <span class="brand-icon">🥝</span>
+                <span class="brand-icon">🥝🐾</span>
                 <span>SkyRoutine</span>
                 <span class="badge-tag" style="background:var(--kiwi-100); color:var(--kiwi-800); font-size:0.75rem;">Kiwi Edition</span>
             </div>
             <div class="nav-controls">
+                <button class="btn-icon-pill" style="background:linear-gradient(135deg, #a3e635, #65a30d); color:white; font-weight:800;" onclick="app.promptInstallApp()">
+                    <span>📲</span> Install App
+                </button>
                 <button class="btn-icon-pill" style="background:linear-gradient(135deg, #84cc16, #65a30d); color:white;" onclick="app.openFutureSimulator()">
                     <span>🔮</span> Quantum Future Simulator
                 </button>
