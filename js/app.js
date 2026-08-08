@@ -147,6 +147,22 @@ class SkyRoutineApp {
                     parsed.timers.walk.timeSpent = 0; parsed.timers.walk.done = false; parsed.timers.walk.running = false;
                     parsed.lastActiveDate = todayStr;
                 }
+                
+                // Force update weight state to 66kg start if legacy state existed
+                if (!parsed.goals || parsed.goals.startWeightKg < 60) {
+                    parsed.goals = {
+                        startWeightKg: 66.0,
+                        targetWeightKg: 50.0,
+                        currentWeightKg: (parsed.goals && parsed.goals.currentWeightKg > 50) ? parsed.goals.currentWeightKg : 66.0,
+                        weightHistory: [
+                            { date: 'Start', weight: 66.0 }
+                        ],
+                        jobApplicationsCount: (parsed.goals && parsed.goals.jobApplicationsCount) || 0,
+                        contentIdeasCount: (parsed.goals && parsed.goals.contentIdeasCount) || 0,
+                        confidenceScore: (parsed.goals && parsed.goals.confidenceScore) || 85
+                    };
+                }
+
                 return { ...this.defaultState, ...parsed };
             }
         } catch (e) {
@@ -156,6 +172,7 @@ class SkyRoutineApp {
         state.lastActiveDate = new Date().toISOString().split('T')[0];
         return state;
     }
+
 
     saveState() {
         try {
@@ -970,7 +987,7 @@ class SkyRoutineApp {
         }
     }
 
-    // 🎯 Personal Transformation Targets & 66kg Weight Loss Journey Analytics
+    // 🎯 Personal Transformation Targets & Ultra-Modern Weight Loss Visualizer
     renderGoalsWidget() {
         const container = document.getElementById('goalsContainer');
         if (!container) return;
@@ -978,7 +995,6 @@ class SkyRoutineApp {
         const startW = this.state.goals.startWeightKg || 66.0;
         const targetW = this.state.goals.targetWeightKg || 50.0;
         const currentW = this.state.goals.currentWeightKg || 66.0;
-        const history = this.state.goals.weightHistory || [];
 
         const totalToLose = Math.max(0.1, (startW - targetW)).toFixed(1);
         const weightLost = Math.max(0, (startW - currentW)).toFixed(1);
@@ -989,62 +1005,65 @@ class SkyRoutineApp {
         const conf = this.state.goals.confidenceScore;
 
         container.innerHTML = `
-            <!-- 66kg Weight Loss Journey Summary Pill Cards -->
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">
-                <div style="background:var(--kiwi-50); border:1.5px solid var(--kiwi-200); border-radius:16px; padding:14px; text-align:center;">
-                    <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:800; color:var(--kiwi-800);">${startW} kg</div>
-                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Start Weight</div>
+            <!-- Modern High-End Weight HUD Grid Cards -->
+            <div class="weight-hud-grid">
+                <div class="weight-hud-card">
+                    <div class="weight-hud-val">${startW} <span style="font-size:1rem;">kg</span></div>
+                    <div class="weight-hud-label">Start Weight</div>
                 </div>
-                <div style="background:linear-gradient(135deg, #ecfccb, #d9f99d); border:1.5px solid var(--kiwi-400); border-radius:16px; padding:14px; text-align:center;">
-                    <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:800; color:#4d7c0f;">-${weightLost} kg</div>
-                    <div style="font-size:0.75rem; color:#3f6212; font-weight:700;">Lost So Far 🎉</div>
+                <div class="weight-hud-card" style="background:linear-gradient(135deg, #ecfccb, #d9f99d); border-color:#a3e635;">
+                    <div class="weight-hud-val" style="color:#4d7c0f;">-${weightLost} <span style="font-size:1rem;">kg</span></div>
+                    <div class="weight-hud-label" style="color:#3f6212;">Lost So Far 🎉</div>
                 </div>
-                <div style="background:#fffedd; border:1.5px solid #fde047; border-radius:16px; padding:14px; text-align:center;">
-                    <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:800; color:#854d0e;">${weightRemaining} kg</div>
-                    <div style="font-size:0.75rem; color:#713f12; font-weight:700;">Remaining to 50kg</div>
+                <div class="weight-hud-card" style="background:#fefce8; border-color:#fde047;">
+                    <div class="weight-hud-val" style="color:#854d0e;">${weightRemaining} <span style="font-size:1rem;">kg</span></div>
+                    <div class="weight-hud-label" style="color:#713f12;">To Reach 50kg 🎯</div>
                 </div>
             </div>
 
-            <!-- Weight Journey Progress Bar -->
-            <div style="background:var(--kiwi-50); border:1.5px solid var(--kiwi-200); border-radius:16px; padding:16px; margin-bottom:16px;">
+            <!-- Weight Journey Progress Track Bar -->
+            <div style="background:var(--kiwi-50); border:1.5px solid var(--kiwi-200); border-radius:var(--radius-md); padding:16px 20px; margin-bottom:20px;">
                 <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.92rem; color:var(--kiwi-800); margin-bottom:8px;">
-                    <span>Weight Journey to 50kg Progress:</span>
-                    <span>${journeyPercent}% Achieved</span>
+                    <span>Weight Journey to 50kg Goal:</span>
+                    <span>${journeyPercent}% Completed</span>
                 </div>
                 <div class="progress-track" style="height:14px; background:var(--kiwi-200);">
                     <div class="progress-fill" style="width: ${journeyPercent}%; background: linear-gradient(90deg, #84cc16, #65a30d);"></div>
                 </div>
             </div>
 
-            <!-- Weight Log Input -->
-            <div class="goal-item">
+            <!-- Sleek Weight Submission HUD Input -->
+            <div class="goal-item" style="margin-bottom:20px;">
                 <div class="goal-header">
-                    <div class="goal-title">⚖️ Weight Loss Tracker (Target: 50.0 kg)</div>
+                    <div class="goal-title">⚖️ Log Current Weight (Target: 50.0 kg)</div>
                     <div class="goal-val">${currentW} kg / 50.0 kg</div>
                 </div>
 
-                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
+                <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; margin-top:12px;">
                     <div>
-                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); display:block;">Start Weight:</label>
-                        <input type="number" step="0.5" id="startWeightInput" value="${startW}" style="width:90px; padding:6px 10px; border-radius:8px; border:1.5px solid var(--kiwi-300); font-weight:700;" />
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Start Weight (kg):</label>
+                        <input type="number" step="0.5" id="startWeightInput" value="${startW}" style="width:110px; padding:8px 12px; border-radius:10px; border:1.5px solid var(--kiwi-300); font-weight:700; font-size:1rem;" />
                     </div>
                     <div>
-                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); display:block;">Current Weight:</label>
-                        <input type="number" step="0.5" id="weightInput" value="${currentW}" style="width:100px; padding:6px 10px; border-radius:8px; border:1.5px solid var(--kiwi-300); font-weight:700;" />
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Current Weight (kg):</label>
+                        <input type="number" step="0.5" id="weightInput" value="${currentW}" style="width:110px; padding:8px 12px; border-radius:10px; border:1.5px solid var(--kiwi-300); font-weight:700; font-size:1rem;" />
                     </div>
-                    <button class="btn-icon-pill" style="background:var(--kiwi-600); color:white; border:none; margin-top:18px;" onclick="app.submitWeight()">Submit Weight</button>
-                </div>
-
-                <!-- Weight Progress Canvas Chart -->
-                <div style="margin-top:20px;">
-                    <div style="font-weight:700; font-size:0.9rem; color:var(--kiwi-800); margin-bottom:8px;">📈 Weight Loss Progress Curve (66kg ➔ 50kg)</div>
-                    <div style="background:white; border:1.5px solid var(--kiwi-100); border-radius:14px; padding:12px;">
-                        <canvas id="weightChartCanvas" width="500" height="180" style="width:100%; height:180px;"></canvas>
-                    </div>
+                    <button class="btn-icon-pill" style="background:var(--kiwi-600); color:white; border:none; padding:10px 22px; font-size:0.92rem;" onclick="app.submitWeight()">Submit Weight Log</button>
                 </div>
             </div>
 
-            <div class="goal-item">
+            <!-- High-End Canvas Area Line Chart Wrapper -->
+            <div class="weight-chart-wrapper">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="font-weight:800; font-size:1.05rem; color:var(--kiwi-800);">📈 Weight Loss Trajectory (66kg ➔ 50kg Target)</div>
+                    <span class="badge-tag" style="background:var(--kiwi-100); color:var(--kiwi-800);">Goal: 50 kg</span>
+                </div>
+                <div style="width:100%; height:200px; position:relative;">
+                    <canvas id="weightChartCanvas" width="600" height="200" style="width:100%; height:200px; display:block;"></canvas>
+                </div>
+            </div>
+
+            <div class="goal-item" style="margin-top:20px;">
                 <div class="goal-header">
                     <div class="goal-title">🎥 Content Creator Roadmap</div>
                     <div class="goal-val">${ideas} Ideas Logged</div>
@@ -1068,78 +1087,138 @@ class SkyRoutineApp {
             </div>
         `;
 
-        setTimeout(() => this.renderWeightChart(), 50);
+        setTimeout(() => this.renderWeightChart(), 60);
     }
 
-    // 📈 Canvas 2D Weight Loss Line Chart
+    // 📈 Ultra-Modern Canvas 2D Gradient Smooth Bezier Area Chart
     renderWeightChart() {
         const canvas = document.getElementById('weightChartCanvas');
         if (!canvas) return;
 
         const ctx = canvas.getContext('2d');
-        const width = canvas.width = 500;
-        const height = canvas.height = 180;
+        const width = canvas.width = 600;
+        const height = canvas.height = 200;
 
-        const history = this.state.goals.weightHistory || [{ date: 'Today', weight: this.state.goals.currentWeightKg }];
+        let history = this.state.goals.weightHistory || [];
+        if (history.length === 0) {
+            history = [{ date: 'Start', weight: 66.0 }];
+        }
+
         ctx.clearRect(0, 0, width, height);
 
-        const padding = 35;
-        const graphWidth = width - (padding * 2);
-        const graphHeight = height - (padding * 2);
+        const paddingX = 50;
+        const paddingY = 40;
+        const graphWidth = width - (paddingX * 2);
+        const graphHeight = height - (paddingY * 2);
 
         const weights = history.map(h => h.weight);
         weights.push(66.0);
-        weights.push(50.0); // Target line
+        weights.push(50.0); // Include target 50kg
 
         const maxW = Math.max(...weights) + 2;
         const minW = Math.min(...weights) - 2;
 
-        // Draw 50kg Target Line (Gold Dashed)
-        const targetY = height - padding - (((50.0 - minW) / (maxW - minW)) * graphHeight);
-        ctx.strokeStyle = '#eab308';
-        ctx.setLineDash([5, 5]);
+        const getX = (idx) => {
+            const divisor = history.length > 1 ? (history.length - 1) : 1;
+            return paddingX + (idx / divisor) * graphWidth;
+        };
+
+        const getY = (w) => {
+            return height - paddingY - (((w - minW) / (maxW - minW)) * graphHeight);
+        };
+
+        // 1. Draw Target 50kg Glowing Gold Line
+        const targetY = getY(50.0);
+        ctx.strokeStyle = '#f59e0b';
+        ctx.setLineDash([6, 6]);
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(padding, targetY);
-        ctx.lineTo(width - padding, targetY);
+        ctx.moveTo(paddingX, targetY);
+        ctx.lineTo(width - paddingX, targetY);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        ctx.fillStyle = '#ca8a04';
-        ctx.font = '700 0.75rem "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('Target 50kg', width - padding - 65, targetY - 6);
+        ctx.fillStyle = '#b45309';
+        ctx.font = '700 0.78rem "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Target 50.0 kg Goal 🎯', width - paddingX - 110, targetY - 8);
 
-        // Draw Weight Line Graph
-        if (history.length > 0) {
+        // 2. Draw Smooth Bezier Curved Area Gradient Fill
+        if (history.length >= 1) {
+            const points = history.map((h, idx) => ({
+                x: getX(idx),
+                y: getY(h.weight)
+            }));
+
+            // Area Gradient Fill under curve
+            const areaGrad = ctx.createLinearGradient(0, paddingY, 0, height - paddingY);
+            areaGrad.addColorStop(0, 'rgba(132, 204, 22, 0.35)');
+            areaGrad.addColorStop(1, 'rgba(132, 204, 22, 0.01)');
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, height - paddingY);
+            ctx.lineTo(points[0].x, points[0].y);
+
+            for (let i = 0; i < points.length - 1; i++) {
+                const xc = (points[i].x + points[i + 1].x) / 2;
+                const yc = (points[i].y + points[i + 1].y) / 2;
+                ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+            }
+            if (points.length > 1) {
+                const last = points[points.length - 1];
+                ctx.lineTo(last.x, last.y);
+            }
+
+            ctx.lineTo(points[points.length - 1].x, height - paddingY);
+            ctx.closePath();
+            ctx.fillStyle = areaGrad;
+            ctx.fill();
+
+            // 3. Draw Vibrant Glowing Curved Stroke Line
             ctx.beginPath();
             ctx.strokeStyle = '#65a30d';
-            ctx.lineWidth = 3.5;
+            ctx.lineWidth = 4;
 
-            history.forEach((h, idx) => {
-                const divisor = history.length > 1 ? (history.length - 1) : 1;
-                const x = padding + (idx / divisor) * graphWidth;
-                const y = height - padding - (((h.weight - minW) / (maxW - minW)) * graphHeight);
-
-                if (idx === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            });
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 0; i < points.length - 1; i++) {
+                const xc = (points[i].x + points[i + 1].x) / 2;
+                const yc = (points[i].y + points[i + 1].y) / 2;
+                ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+            }
+            if (points.length > 1) {
+                const last = points[points.length - 1];
+                ctx.lineTo(last.x, last.y);
+            }
             ctx.stroke();
 
-            // Draw data points & labels
-            history.forEach((h, idx) => {
-                const divisor = history.length > 1 ? (history.length - 1) : 1;
-                const x = padding + (idx / divisor) * graphWidth;
-                const y = height - padding - (((h.weight - minW) / (maxW - minW)) * graphHeight);
+            // 4. Draw Glowing Data Point Pills & Badges
+            points.forEach((pt, idx) => {
+                const item = history[idx];
 
-                ctx.fillStyle = '#4d7c0f';
+                // Outer Glow Circle
                 ctx.beginPath();
-                ctx.arc(x, y, 6, 0, Math.PI * 2);
+                ctx.arc(pt.x, pt.y, 8, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(132, 204, 22, 0.3)';
                 ctx.fill();
 
-                ctx.fillStyle = '#1e293b';
-                ctx.font = '800 0.82rem "Outfit", sans-serif';
+                // Inner Circle
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#4d7c0f';
+                ctx.fill();
+
+                // Weight Value Badge Label Box
+                const text = `${item.weight} kg`;
+                ctx.font = '800 0.85rem "Outfit", sans-serif';
+                const textWidth = ctx.measureText(text).width;
+
+                ctx.fillStyle = '#3f6212';
+                ctx.beginPath();
+                ctx.roundRect(pt.x - (textWidth / 2) - 6, pt.y - 30, textWidth + 12, 20, 10);
+                ctx.fill();
+
+                ctx.fillStyle = '#ffffff';
                 ctx.textAlign = 'center';
-                ctx.fillText(`${h.weight}kg`, x, y - 10);
+                ctx.fillText(text, pt.x, pt.y - 16);
             });
         }
     }
@@ -1153,6 +1232,8 @@ class SkyRoutineApp {
             this.state.goals.currentWeightKg = val;
 
             if (!this.state.goals.weightHistory) this.state.goals.weightHistory = [];
+            
+            // Add entry to history if different or new
             this.state.goals.weightHistory.push({
                 date: new Date().toISOString().split('T')[0].slice(5),
                 weight: val
@@ -1169,6 +1250,7 @@ class SkyRoutineApp {
             this.showMascotDialogue(`Awesome! Weight logged (${val} kg)! Total ${lost} kg lost so far! Only ${remaining} kg left to reach 50kg! 🎉✨`);
         }
     }
+
 
 
 
