@@ -14,15 +14,19 @@ class SkyRoutineApp {
                 startDate: new Date().toISOString().split('T')[0]
             },
             goals: {
+                startWeightKg: 58.0,
                 targetWeightKg: 50.0,
                 currentWeightKg: 54.0,
                 weightHistory: [
-                    { date: new Date().toISOString().split('T')[0], weight: 54.0 }
+                    { date: '2026-08-01', weight: 58.0 },
+                    { date: '2026-08-05', weight: 56.0 },
+                    { date: '2026-08-08', weight: 54.0 }
                 ],
                 jobApplicationsCount: 0,
                 contentIdeasCount: 0,
                 confidenceScore: 85
             },
+
             namaj: {
                 fajr: false,
                 dhuhr: false,
@@ -873,28 +877,63 @@ class SkyRoutineApp {
         }
     }
 
-    // 🎯 Personal Transformation Targets & Easy Weight Submission
+    // 🎯 Personal Transformation Targets & Weight Loss Analytics
     renderGoalsWidget() {
         const container = document.getElementById('goalsContainer');
         if (!container) return;
 
-        const targetW = this.state.goals.targetWeightKg;
-        const currentW = this.state.goals.currentWeightKg;
+        const startW = this.state.goals.startWeightKg || 58.0;
+        const targetW = this.state.goals.targetWeightKg || 50.0;
+        const currentW = this.state.goals.currentWeightKg || 54.0;
+        const history = this.state.goals.weightHistory || [];
+
+        const weightLost = Math.max(0, (startW - currentW)).toFixed(1);
+        const weightRemaining = Math.max(0, (currentW - targetW)).toFixed(1);
         const ideas = this.state.goals.contentIdeasCount;
         const conf = this.state.goals.confidenceScore;
 
         container.innerHTML = `
+            <!-- Weight Loss Journey Summary Pill Cards -->
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">
+                <div style="background:var(--kiwi-50); border:1.5px solid var(--kiwi-200); border-radius:16px; padding:14px; text-align:center;">
+                    <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:800; color:var(--kiwi-800);">${startW} kg</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Start Weight</div>
+                </div>
+                <div style="background:linear-gradient(135deg, #ecfccb, #d9f99d); border:1.5px solid var(--kiwi-400); border-radius:16px; padding:14px; text-align:center;">
+                    <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:800; color:#4d7c0f;">-${weightLost} kg</div>
+                    <div style="font-size:0.75rem; color:#3f6212; font-weight:700;">Lost So Far 🎉</div>
+                </div>
+                <div style="background:#fffedd; border:1.5px solid #fde047; border-radius:16px; padding:14px; text-align:center;">
+                    <div style="font-family:'Outfit'; font-size:1.6rem; font-weight:800; color:#854d0e;">${weightRemaining} kg</div>
+                    <div style="font-size:0.75rem; color:#713f12; font-weight:700;">Remaining to 50kg</div>
+                </div>
+            </div>
+
+            <!-- Weight Log Input -->
             <div class="goal-item">
                 <div class="goal-header">
-                    <div class="goal-title">⚖️ Target Weight (Goal: 50 kg)</div>
-                    <div class="goal-val">${currentW} kg / ${targetW} kg</div>
+                    <div class="goal-title">⚖️ Weight Loss Journey (Target: 50.0 kg)</div>
+                    <div class="goal-val">${currentW} kg / 50.0 kg</div>
                 </div>
-                <div style="font-size:0.84rem; color:var(--text-muted); margin-bottom:10px;">
-                    Submit current weight to record history & track progress to 50kg!
+
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
+                    <div>
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); display:block;">Start Weight:</label>
+                        <input type="number" step="0.5" id="startWeightInput" value="${startW}" style="width:90px; padding:6px 10px; border-radius:8px; border:1.5px solid var(--kiwi-300); font-weight:700;" />
+                    </div>
+                    <div>
+                        <label style="font-size:0.78rem; font-weight:700; color:var(--text-muted); display:block;">Current Weight:</label>
+                        <input type="number" step="0.5" id="weightInput" value="${currentW}" style="width:100px; padding:6px 10px; border-radius:8px; border:1.5px solid var(--kiwi-300); font-weight:700;" />
+                    </div>
+                    <button class="btn-icon-pill" style="background:var(--kiwi-600); color:white; border:none; margin-top:18px;" onclick="app.submitWeight()">Submit Weight</button>
                 </div>
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <input type="number" step="0.5" id="weightInput" value="${currentW}" style="width:110px; padding:8px 12px; border-radius:10px; border:1.5px solid var(--kiwi-300); font-weight:700;" />
-                    <button class="btn-icon-pill" style="background:var(--kiwi-600); color:white; border:none;" onclick="app.submitWeight()">Submit Weight</button>
+
+                <!-- Weight Progress Canvas Chart -->
+                <div style="margin-top:20px;">
+                    <div style="font-weight:700; font-size:0.9rem; color:var(--kiwi-800); margin-bottom:8px;">📈 Weight Loss Progress Chart</div>
+                    <div style="background:white; border:1.5px solid var(--kiwi-100); border-radius:14px; padding:12px;">
+                        <canvas id="weightChartCanvas" width="500" height="180" style="width:100%; height:180px;"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -921,24 +960,106 @@ class SkyRoutineApp {
                 </div>
             </div>
         `;
+
+        setTimeout(() => this.renderWeightChart(), 50);
+    }
+
+    // 📈 Canvas 2D Weight Loss Line Chart
+    renderWeightChart() {
+        const canvas = document.getElementById('weightChartCanvas');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width = 500;
+        const height = canvas.height = 180;
+
+        const history = this.state.goals.weightHistory || [{ date: 'Today', weight: this.state.goals.currentWeightKg }];
+        ctx.clearRect(0, 0, width, height);
+
+        const padding = 35;
+        const graphWidth = width - (padding * 2);
+        const graphHeight = height - (padding * 2);
+
+        const weights = history.map(h => h.weight);
+        weights.push(50.0); // Include target 50kg line
+
+        const maxW = Math.max(...weights) + 2;
+        const minW = Math.min(...weights) - 2;
+
+        // Draw 50kg Target Line (Gold Dashed)
+        const targetY = height - padding - (((50.0 - minW) / (maxW - minW)) * graphHeight);
+        ctx.strokeStyle = '#eab308';
+        ctx.setLineDash([5, 5]);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(padding, targetY);
+        ctx.lineTo(width - padding, targetY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#ca8a04';
+        ctx.font = '700 0.75rem "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Target 50kg', width - padding - 65, targetY - 6);
+
+        // Draw Weight Line Graph
+        if (history.length > 1) {
+            ctx.beginPath();
+            ctx.strokeStyle = '#65a30d';
+            ctx.lineWidth = 3;
+
+            history.forEach((h, idx) => {
+                const x = padding + (idx / (history.length - 1)) * graphWidth;
+                const y = height - padding - (((h.weight - minW) / (maxW - minW)) * graphHeight);
+
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Draw data points & labels
+            history.forEach((h, idx) => {
+                const x = padding + (idx / (history.length - 1)) * graphWidth;
+                const y = height - padding - (((h.weight - minW) / (maxW - minW)) * graphHeight);
+
+                ctx.fillStyle = '#4d7c0f';
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#1e293b';
+                ctx.font = '800 0.8rem "Outfit", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${h.weight}kg`, x, y - 10);
+            });
+        }
     }
 
     submitWeight() {
-        const val = parseFloat(document.getElementById('weightInput').value);
+        const startVal = parseFloat(document.getElementById('startWeightInput')?.value || 58.0);
+        const val = parseFloat(document.getElementById('weightInput')?.value);
+        
         if (!isNaN(val) && val > 0) {
+            this.state.goals.startWeightKg = startVal;
             this.state.goals.currentWeightKg = val;
+
             if (!this.state.goals.weightHistory) this.state.goals.weightHistory = [];
             this.state.goals.weightHistory.push({
-                date: new Date().toISOString().split('T')[0],
+                date: new Date().toISOString().split('T')[0].slice(5),
                 weight: val
             });
+
             this.saveState();
             this.renderGoalsWidget();
             window.cuteAudio.playFanfare();
             this.triggerConfetti();
-            this.showMascotDialogue(`Weight submitted & logged (${val} kg)! 50kg target focus ongoing! 🌸✨`);
+
+            const lost = (startVal - val).toFixed(1);
+            const remaining = (val - 50.0).toFixed(1);
+
+            this.showMascotDialogue(`Awesome! Weight logged (${val} kg)! Total ${lost} kg lost so far! Only ${remaining} kg left to reach 50kg! 🎉✨`);
         }
     }
+
 
     updateContentIdeas(delta) {
         this.state.goals.contentIdeasCount = Math.max(0, this.state.goals.contentIdeasCount + delta);
