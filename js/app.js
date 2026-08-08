@@ -70,11 +70,16 @@ class SkyRoutineApp {
                 nextjs: false
             },
             birthdays: [
-                { id: '1', name: 'Khadija Apu', date: '07-23', type: 'Birthday', avatar: '🌸', phone: '8801700000000' },
-                { id: '2', name: 'Zayed Vai', date: '05-21', type: 'Birthday', avatar: '👑', phone: '8801800000000' },
-                { id: '3', name: 'Sumi', date: '05-08', type: 'Birthday', avatar: '✨', phone: '8801900000000' },
-                { id: '4', name: "Ma, Baba & Khadija Apu's Anniversary", date: '11-21', type: 'Anniversary', avatar: '💍', phone: '8801700000000' }
+                { id: '1', name: 'My Birthday 🎉', date: '09-12', type: 'Birthday', avatar: '👑', phone: '8801700000000' },
+                { id: '2', name: 'Mohammad (Nephew)', date: '09-14', type: 'Birthday', avatar: '🎈', phone: '8801700000000' },
+                { id: '3', name: 'Arafat', date: '09-25', type: 'Birthday', avatar: '✨', phone: '8801700000000' },
+                { id: '4', name: 'Khadija Apu', date: '07-23', type: 'Birthday', avatar: '🌸', phone: '8801700000000' },
+                { id: '5', name: 'Arifa', date: '06-28', type: 'Birthday', avatar: '💖', phone: '8801700000000' },
+                { id: '6', name: 'Zayed Vai', date: '05-21', type: 'Birthday', avatar: '⭐', phone: '8801800000000' },
+                { id: '7', name: 'Sumi', date: '05-08', type: 'Birthday', avatar: '🌷', phone: '8801900000000' },
+                { id: '8', name: "Ma, Baba & Khadija Apu's Anniversary", date: '11-21', type: 'Anniversary', avatar: '💍', phone: '8801700000000' }
             ],
+
             quickNotes: [], // Array of one-day notes: { id, text, createdAt }
             weather: {
                 temp: '--',
