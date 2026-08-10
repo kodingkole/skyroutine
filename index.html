@@ -16,9 +16,13 @@
     <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=23.0">
 </head>
 <body>
+
+    <button id="exitWallpaperBtn" class="exit-wallpaper-btn" onclick="exitWallpaperSafely()" title="Return to normal mode">
+        ← Normal Mode
+    </button>
 
     <!-- Ambient Kiwi Slices Background -->
     <div class="bg-decoration">
@@ -37,14 +41,22 @@
                 <span class="badge-tag" style="background:var(--kiwi-100); color:var(--kiwi-800); font-size:0.75rem;">Kiwi Edition</span>
             </div>
             <div class="nav-controls">
+                <div class="dashboard-view-switcher">
+                    <button id="todayViewBtn" onclick="app.switchDashboardPage('today')">☀️ Today</button>
+                    <button id="trackersViewBtn" onclick="app.switchDashboardPage('trackers')">📚 All Trackers</button>
+                    <button id="activityViewBtn" onclick="app.switchDashboardPage('activity')">🕒 Activity Log</button>
+                </div>
                 <button class="btn-icon-pill" style="background:linear-gradient(135deg, #8b5cf6, #6d28d9); color:white; font-weight:800;" onclick="app.openAppGuideModal()">
                     <span>💡</span> PC & Phone Setup Guide
                 </button>
-                <button class="btn-icon-pill" style="background:linear-gradient(135deg, #0ea5e9, #0284c7); color:white; font-weight:800;" onclick="app.openMasterProgressReportModal()">
-                    <span>📊</span> View Full Progress Report
+                <button class="btn-icon-pill" style="background:linear-gradient(135deg, #0ea5e9, #0284c7); color:white; font-weight:800;" onclick="app.openAnalyticsReportModal()">
+                    <span>📊</span> View Weekly/Monthly Report
                 </button>
                 <button class="btn-icon-pill" style="background:linear-gradient(135deg, #a3e635, #65a30d); color:white; font-weight:800;" onclick="app.promptInstallApp()">
                     <span>📲</span> Install App
+                </button>
+                <button class="btn-icon-pill sync-device-btn" id="deviceSyncBtn" onclick="app.setupDeviceSync()">
+                    <span>☁️</span> Device Sync
                 </button>
 
                 <button class="btn-icon-pill" style="background:linear-gradient(135deg, #84cc16, #65a30d); color:white;" onclick="app.openFutureSimulator()">
@@ -151,6 +163,18 @@
             </div>
         </header>
 
+        <!-- 🏆 Overall 100-Day Transformation Analytics Dashboard Card -->
+        <section id="todayDashboardPage" class="dashboard-page"></section>
+        <section id="activityLogPage" class="dashboard-page" style="display:none;"></section>
+
+        <div id="overallTransformationContainer" style="margin-bottom:24px;">
+            <!-- Dynamic Overall Transformation Dashboard rendered via JS -->
+        </div>
+
+        <!-- 🎂 Special Event Banner (e.g. Birthdays) -->
+        <div id="specialEventBannerContainer"></div>
+        <div id="selfWorthReminderContainer" class="self-worth-reminder"></div>
+
         <!-- Main Dashboard Grid -->
         <div class="dashboard-grid">
             
@@ -225,6 +249,33 @@
                     </div>
                 </div>
 
+                <!-- 30-Day Behaviour Reset Challenge -->
+                <div class="card-widget behaviour-reset-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title"><span>🌱</span> 30-Day Behaviour Reset</h2>
+                        <span class="widget-badge" id="behaviourResetBadge">Day 1/30</span>
+                    </div>
+                    <div id="behaviourResetContainer"></div>
+                </div>
+
+                <!-- 90-Day Career & Life Plan -->
+                <div class="card-widget life-recovery-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title"><span>🧭</span> 90-Day Career & Life Plan</h2>
+                        <span class="widget-badge" id="lifeRecoveryBadge">Week 1/13</span>
+                    </div>
+                    <div id="lifeRecoveryContainer"></div>
+                </div>
+
+                <!-- 30-Day Classy Confidence & Career Reset -->
+                <div class="card-widget classy-reset-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title"><span>✨</span> Classy Confidence & Career Reset</h2>
+                        <span class="widget-badge" id="classyResetBadge">Day 1/30</span>
+                    </div>
+                    <div id="classyResetContainer"></div>
+                </div>
+
                 <!-- 💅 Daily Care, Glowy Skin Diet & Housekeeping Checklist -->
                 <div class="card-widget">
                     <div class="widget-header">
@@ -271,6 +322,18 @@
                     </div>
                 </div>
 
+                <div class="card-widget">
+                    <div class="widget-header">
+                        <h2 class="widget-title">
+                            <span>📝</span> Content Idea & Script Tracker
+                        </h2>
+                        <span class="widget-badge">Creative Studio</span>
+                    </div>
+                    <div id="contentIdeaContainer">
+                        <!-- Content Ideas rendered via JS -->
+                    </div>
+                </div>
+
                 <!-- 💻 Tech Skill Mastery Roadmap -->
                 <div class="card-widget">
 
@@ -291,7 +354,7 @@
                         <h2 class="widget-title">
                             <span>🎂</span> Birthdays & Anniversary Reminders
                         </h2>
-                        <span class="widget-badge">WhatsApp 1-Click Wish</span>
+                        <span class="widget-badge">Gift Ideas & Reminders</span>
                     </div>
                     <div id="birthdaysContainer">
                         <!-- Dynamic Birthday Cards rendered via JS -->
@@ -308,6 +371,16 @@
                     </div>
                     <div id="goalsContainer">
                         <!-- Dynamic Goals rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- 🔒 Secret Love Diary -->
+                <div class="card-widget" style="border: 2px solid #fbcfe8;">
+                    <div class="widget-header" style="margin-bottom:0;">
+                        <h2 class="widget-title" style="color: #be185d;">
+                            <span>🔒</span> Secret Love Diary
+                        </h2>
+                        <button class="btn-primary-block" style="background:#be185d; width:auto; padding:6px 14px; font-size:0.9rem; margin:0;" onclick="app.openSecretDiaryModal()">Open Diary 💌</button>
                     </div>
                 </div>
 
@@ -416,21 +489,27 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="masterReportModalOverlay">
-        <div class="modal-box" style="max-width:620px;">
+    <div class="modal-overlay" id="weeklyReportModalOverlay">
+        <div class="modal-box" style="max-width:920px; max-height:92vh; overflow:auto;">
             <div class="modal-header">
                 <div class="modal-icon">📊</div>
-                <h2 class="modal-title" style="color:var(--kiwi-800);">100-Day Transformation Progress Report</h2>
-                <p style="font-size:0.88rem; color:var(--text-muted);">Overall Habit Controls, Weight Drop & Routine Summary</p>
+                <h2 class="modal-title" style="color:var(--kiwi-800);">Weekly & Monthly Performance Report</h2>
+                <p style="font-size:0.88rem; color:var(--text-muted);">Your average score & performance analytics</p>
             </div>
 
-            <div class="modal-body" id="masterReportBody">
+            <div class="modal-body" id="weeklyReportBody">
                 <!-- Rendered dynamically via JS -->
             </div>
 
-            <button class="btn-primary-block" onclick="app.closeMasterProgressReportModal()">
+            <button class="btn-primary-block" onclick="app.closeWeeklyReportModal()">
                 Close Report & Keep Progressing 🚀
             </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="secretDiaryModalOverlay">
+        <div class="modal-box" style="max-width:500px; text-align:center; border:3px solid #fbcfe8;" id="secretDiaryModalBox">
+            <!-- Rendered via JS -->
         </div>
     </div>
 
@@ -455,47 +534,6 @@
 
     <div class="modal-overlay" id="futureSimulatorModalOverlay">
         <div class="modal-box simulator-box" style="max-width:580px; text-align:center;">
-        <!-- Hero 100-Day Transformation Counter Banner -->
-        <header class="hero-banner">
-            <div class="hero-content">
-                <div class="hero-title-group">
-                    <h1>
-                        Day <span class="highlight" id="challengeCurrentDay">1</span> / 100 
-                        <span class="badge-tag" style="background:var(--kiwi-100); color:var(--kiwi-800);">Sky's Journey</span>
-                    </h1>
-                    <p style="font-size:0.95rem; color:var(--text-muted); font-weight:600;">
-                        100-Day Life & Career Transformation • <span id="challengeRemainingDays">99</span> Days Remaining
-                    </p>
-                </div>
-                <div class="hero-progress-group">
-                    <div class="progress-track">
-                        <div class="progress-fill" id="challengeProgressBar" style="width: 1%;"></div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- 🏆 Overall 100-Day Transformation Analytics Dashboard Card -->
-        <div id="overallTransformationContainer">
-            <!-- Dynamic Overall Transformation Dashboard rendered via JS -->
-        </div>
-
-        <!-- 🐾 Free-Walking Floating Kiki Pet Companion -->
-        <div id="freeWalkingKikiPet" class="walking-kiki-pet" onclick="app.petKikiCat()" title="Click to pet Kiki!">
-            <div class="magical-kiwi-cat" style="width:65px; height:65px;">
-                <div class="kiki-accessory-container"></div>
-                <div class="kiwi-cat-body" style="width:50px; height:45px; left:8px;">
-                    <div class="kiwi-ear left" style="width:14px; height:18px;"></div>
-                    <div class="kiwi-ear right" style="width:14px; height:18px;"></div>
-                    <div class="kiwi-eyes" style="gap:12px; top:14px; left:12px;">
-                        <div class="kiwi-eye" style="width:8px; height:9px;"></div>
-                        <div class="kiwi-eye" style="width:8px; height:9px;"></div>
-                    </div>
-                    <div class="kiwi-nose" style="top:22px; left:23px; width:4px; height:4px;"></div>
-                </div>
-            </div>
-        </div>
-
             <div class="modal-header">
                 <div class="modal-icon">🔮</div>
                 <h2 class="modal-title" style="color:var(--kiwi-800);">AI 2060 Quantum Future Simulator</h2>
@@ -582,8 +620,54 @@
         </div>
     </div>
 
+    <!-- 🐾 Free-Walking Floating Kiki Pet Companion -->
+    <div id="freeWalkingKikiPet" class="walking-kiki-pet" onclick="app.petKikiCat()" title="Click to pet Kiki!">
+        <div class="magical-kiwi-cat" style="width:65px; height:65px;">
+            <div class="kiki-accessory-container"></div>
+            <div class="kiwi-cat-body" style="width:50px; height:45px; left:8px;">
+                <div class="kiwi-ear left" style="width:14px; height:18px;"></div>
+                <div class="kiwi-ear right" style="width:14px; height:18px;"></div>
+                <div class="kiwi-eyes" style="gap:12px; top:14px; left:12px;">
+                    <div class="kiwi-eye" style="width:8px; height:9px;"></div>
+                    <div class="kiwi-eye" style="width:8px; height:9px;"></div>
+                </div>
+                <div class="kiwi-nose" style="top:22px; left:23px; width:4px; height:4px;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
-    <script src="js/audio.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+        function exitWallpaperSafely() {
+            document.body.classList.remove('wallpaper-mode');
+            const exitButton = document.getElementById('exitWallpaperBtn');
+            if (exitButton) exitButton.style.display = 'none';
+            try {
+                const key = 'sky_routine_app_data_v4';
+                const saved = JSON.parse(localStorage.getItem(key) || '{}');
+                saved.settings = saved.settings || {};
+                saved.settings.wallpaperMode = false;
+                localStorage.setItem(key, JSON.stringify(saved));
+                if (window.app && window.app.state && window.app.state.settings) {
+                    window.app.state.settings.wallpaperMode = false;
+                }
+            } catch (error) {
+                console.warn('Normal mode restored without saving preference.', error);
+            }
+        }
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') exitWallpaperSafely();
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const exitButton = document.getElementById('exitWallpaperBtn');
+            if (!exitButton) return;
+            exitButton.addEventListener('touchend', function (event) {
+                event.preventDefault();
+                exitWallpaperSafely();
+            }, { passive: false });
+        });
+    </script>
+    <script src="js/audio.js?v=8.0"></script>
+    <script src="js/app.js?v=23.0"></script>
 </body>
 </html>
